@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GAME 266 — Fire the Cannons! Build Guide v1.0</title>
+<title>GAME 266 — Fire the Cannons! Build Guide v1.1</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -88,6 +88,18 @@ code {
 .tag-audio { background: rgb(224, 242, 241); color: rgb(0, 105, 92); }
 .tag-anim { background: rgb(255, 235, 238); color: rgb(183, 28, 28); }
 .tag-bonus { background: rgb(255, 248, 225); color: rgb(230, 81, 0); }
+.tag-advanced { background: rgb(255, 224, 178); color: rgb(191, 54, 12); font-weight: 600; }
+
+.bonus-banner {
+  background: linear-gradient(90deg, rgb(255, 243, 224) 0%, rgb(255, 224, 178) 100%);
+  border: 1px solid rgb(255, 183, 77); border-radius: 10px;
+  padding: 14px 18px; margin: 16px 0;
+  font-size: 13.5px; line-height: 1.7; color: rgb(120, 60, 0);
+}
+.bonus-banner h3 {
+  font-size: 14px; color: rgb(150, 70, 0); margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
 
 .build-note {
   background: rgb(232, 245, 233); border-left: 4px solid rgb(46, 125, 50);
@@ -214,6 +226,9 @@ code {
   .tag-audio { background: rgb(0, 77, 64); color: rgb(128, 203, 196); }
   .tag-anim { background: rgb(120, 25, 35); color: rgb(239, 154, 154); }
   .tag-bonus { background: rgb(60, 50, 0); color: rgb(255, 220, 130); }
+  .tag-advanced { background: rgb(120, 60, 0); color: rgb(255, 200, 130); }
+  .bonus-banner { background: linear-gradient(90deg, rgb(50, 40, 20) 0%, rgb(70, 50, 20) 100%); border-color: rgb(180, 120, 30); color: rgb(255, 200, 130); }
+  .bonus-banner h3 { color: rgb(255, 180, 100); }
   .session-controls button { background: rgb(51, 51, 51); border-color: rgb(68, 68, 68); color: rgb(170, 170, 170); }
   .session-controls button:hover { background: rgb(68, 68, 68); }
   .section-complete-btn { background: rgb(26, 46, 26); color: rgb(129, 199, 132); border-color: rgb(46, 125, 50); }
@@ -226,11 +241,12 @@ code {
 <body>
 
 <div class="doc-header">
-  <h1>GAME 266 — Fire the Cannons! Build Guide v1.0</h1>
+  <h1>GAME 266 — Fire the Cannons! Build Guide v1.1</h1>
   <div class="subtitle">Your first Blueprint project · Unreal Engine 5.6.1</div>
   <div class="meta">
     <strong>Monday:</strong> Phases 1–6 — foundation + first shot &nbsp;·&nbsp;
-    <strong>Wednesday:</strong> Phases 7–12 — impact, animation, destruction, polish<br>
+    <strong>Wednesday:</strong> Phases 7–11 — impact, animation, Chaos, polish<br>
+    <strong>Bonus phases B1–B4:</strong> optional advanced work — charge shots, ammo inheritance, score HUD, slo-mo break<br>
     <strong>Friday 8 AM:</strong> target submission &nbsp;·&nbsp;
     <strong>Saturday night:</strong> two-day extension cutoff<br>
     Take screenshots at every <strong>📸</strong> cue — they go to Blackboard with your final BP screenshots packet.
@@ -388,31 +404,42 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">In <code>Content/_project/Inputs</code> → right-click → <strong>Input → Input Action</strong> → name it <code>IA_Fire</code> → open it → <strong>Value Type</strong> = <code>Digital (bool)</code> → Save. <span class="tag tag-input">INPUT</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Right-click → <strong>Input → Input Mapping Context</strong> → name it <code>IMC_Cannons</code> → open it → click <strong>+</strong> next to "Mappings" → assign action = <code>IA_Fire</code>, key = <strong>Space Bar</strong> → Save.</span></label>
-
   <div class="concept-box">
     <h3>Why two assets for one keypress?</h3>
-    <p>The <strong>Input Action</strong> describes <em>what</em> can happen ("the player wants to fire"). The <strong>Input Mapping Context</strong> describes <em>how</em> they trigger it ("space bar, on this device, in this game state"). Splitting them lets you re-bind keys, support gamepads, and swap entire control schemes (driving vs walking vs menu) without touching gameplay code.</p>
+    <p>The <strong>Input Action</strong> describes <em>what</em> can happen ("the player wants to fire"). The <strong>Input Mapping Context</strong> describes <em>how</em> they trigger it ("Left Mouse Button, on this device, in this game state"). Splitting them lets you re-bind keys, support gamepads, and swap entire control schemes (driving vs walking vs menu) without touching gameplay code.</p>
+    <p>You will see this two-asset pattern again on every Unreal project for the rest of your career. Learn it now.</p>
   </div>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_ThirdPersonCharacter</code>. In the Event Graph, find <code>Event BeginPlay</code>. Add the IMC registration chain (or extend it if it already exists for the template's IMC):</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">In the Content Browser, navigate to <code>Content/ThirdPerson/Input/</code>. The template ships with <code>IMC_Default</code> (the mapping context) and a folder of input actions: <code>IA_Move</code>, <code>IA_Look</code>, <code>IA_Jump</code>. Take a moment to open <code>IMC_Default</code> and read it — this is your reference for how a real IMC is structured.</span></label>
+
+  <div class="tip"><strong>We're going to own the input mapping.</strong> The template's <code>IMC_Default</code> is fine reference code, but it lives outside <code>_project</code>. As the artist owning this game's controls, you should have your own IMC inside your own folder. We'll duplicate the template's IMC, extend it with our Fire action, then swap the BP to use ours.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Right-click <code>IMC_Default</code> → <strong>Duplicate</strong> → drag the copy into <code>Content/_project/Inputs</code> → rename it <code>IMC_Cannons</code>. <span class="tag tag-input">INPUT</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>IMC_Cannons</code>. You should see the inherited Move / Look / Jump mappings already wired. Click <strong>+</strong> next to "Mappings" to add a new entry → assign action = <code>IA_Fire</code>, key = <strong>Left Mouse Button</strong> → Save.</span></label>
+
+  <div class="gotcha"><strong>Why not Space for Fire?</strong> The template's <code>IA_Jump</code> already owns Space. Two actions on the same key in the same context = unpredictable behavior. LMB is also more thematic for "fire" and matches every shooter your students have played. Keep Space for Jump, use LMB for Fire.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_ThirdPersonCharacter</code>. In the Event Graph at <code>Event BeginPlay</code>, find the existing <strong>Add Mapping Context</strong> node (the template wired this for you — its Mapping Context pin currently points to <code>IMC_Default</code>).</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Replace</strong> the IMC reference: click the <code>IMC_Default</code> pin value → in the dropdown, select <code>IMC_Cannons</code>. The template's chain is now driving <em>your</em> mapping context.</span></label>
 
   <div class="bp-wiring">
-    <strong>BP_ThirdPersonCharacter — Event Graph (BeginPlay extension):</strong><br><br>
+    <strong>BP_ThirdPersonCharacter — Event BeginPlay (after the swap):</strong><br><br>
     <span class="node">Event BeginPlay</span> <span class="arrow">→</span> <span class="node">Get Controller</span> <span class="arrow">→</span> <span class="node">Cast to PlayerController</span><br>
-    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Get Local Player</span> <span class="arrow">→</span> <span class="node">Get Subsystem</span> <span class="arrow">(class:</span> <span class="value">EnhancedInputLocalPlayerSubsystem</span><span class="arrow">)</span><br>
+    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Get Local Player</span> <span class="arrow">→</span> <span class="node">Get Subsystem</span> <span class="arrow">(EnhancedInputLocalPlayerSubsystem)</span><br>
     &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Add Mapping Context</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Mapping Context</span> = <span class="value">IMC_Cannons</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Mapping Context</span> = <span class="value">IMC_Cannons</span> <span class="arrow">(was IMC_Default)</span><br>
     &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Priority</span> = <span class="value">0</span>
   </div>
 
-  <div class="gotcha"><strong>The template already adds its own IMC.</strong> Don't replace that chain — branch off it or chain onto its end. Both contexts can be active at once; that's the point of priority. Your <code>IMC_Cannons</code> at priority 0 sits alongside the template's movement IMC.</div>
-
   <label class="item"><input type="checkbox"><span class="item-text">Still in <code>BP_ThirdPersonCharacter</code> → right-click in empty Event Graph space → search <code>IA_Fire</code> → pick <strong>EnhancedInputAction IA_Fire</strong>. From its <strong>Triggered</strong> output execution pin, drag off → <strong>Print String</strong> → text = <code>"Fire!"</code>.</span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, press <strong>Play</strong> in the level. Press <strong>Space</strong>. You should see "Fire!" appear in the top-left of the viewport. <span class="tag tag-checkpoint">CHECKPOINT — input is alive</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, press <strong>Play</strong> in the level. Confirm: WASD moves, mouse looks, Space jumps (all from the template, still working through your IMC), and <strong>Left Mouse Button</strong> prints "Fire!" in the top-left of the viewport. <span class="tag tag-checkpoint">CHECKPOINT — input is alive</span></span></label>
 
-  <div class="gotcha"><strong>Nothing happens?</strong> Check three things in order: (1) Is your character actually <code>BP_ThirdPersonCharacter</code> when you press play? Open World Settings → confirm GameMode → confirm Default Pawn Class. (2) Did you Save the IMC asset itself, not just the BP? Input assets need their own save. (3) Did the Add Mapping Context node actually run? Drop a Print String right after BeginPlay to verify.</div>
+  <div class="gotcha"><strong>Movement broke after the swap?</strong> You probably saved <code>IMC_Cannons</code> before the duplicate finished pulling in the inherited mappings. Open <code>IMC_Cannons</code> and confirm IA_Move, IA_Look, IA_Jump, and IA_Fire are all listed. If Move and Look are missing, delete <code>IMC_Cannons</code> and redo the Duplicate from <code>IMC_Default</code>.</div>
+
+  <div class="gotcha"><strong>Fire prints nothing?</strong> Three things in order: (1) Is your default pawn actually <code>BP_ThirdPersonCharacter</code>? Open World Settings → GameMode Override → Default Pawn Class. (2) Did you Save <code>IMC_Cannons</code> after adding IA_Fire? Input assets need their own save. (3) Did the Add Mapping Context node actually run? Drop a Print String right after BeginPlay to verify.</div>
 
   <div class="screenshot-cue"><strong>📸 SCREENSHOT 04 — input wiring:</strong> the Event Graph chain from BeginPlay through the EnhancedInputLocalPlayerSubsystem to Add Mapping Context, AND the IA_Fire event node connected to Print String.</div>
 </div>
@@ -422,7 +449,7 @@ code {
     <span class="phase-num" style="background:#E3F2FD;color:#1565C0;">Phase 6</span>
     <span class="phase-title">First shot — spawn a cannonball</span>
   </div>
-  <div class="phase-note">By the end of this phase, pressing space sends a sphere flying out of every cannon. That's Monday's payoff.</div>
+  <div class="phase-note">By the end of this phase, clicking LMB sends a sphere flying out of every cannon. That's Monday's payoff.</div>
 
   <label class="item"><input type="checkbox"><span class="item-text">In <code>Content/_project/Blueprints</code> → new Blueprint Class → parent <strong>Actor</strong> → name <code>BP_Cannonball</code>. Open it. <span class="tag tag-class">CLASS</span></span></label>
 
@@ -460,11 +487,11 @@ code {
 
   <div class="gotcha"><strong>Get All Actors of Class is expensive.</strong> It scans the entire world. Fine for one shot per second on a level with two cannons. <em>Don't</em> use it on Tick. In a real game you'd cache references at BeginPlay. We'll talk about that on Wednesday — for now, simplicity wins.</div>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, press Play, press Space. <strong>A sphere should fly out of each cannon</strong> (well — appear in front of each cannon and just hang there. It has no movement yet. That's correct for Monday.) <span class="tag tag-checkpoint">CHECKPOINT — Monday goal achieved</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, press Play, click <strong>Left Mouse Button</strong>. <strong>A sphere should fly out of each cannon</strong> (well — appear in front of each cannon and just hang there. It has no movement yet. That's correct for Monday.) <span class="tag tag-checkpoint">CHECKPOINT — Monday goal achieved</span></span></label>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 05 — first shot:</strong> in-game screenshot showing a sphere spawned in front of at least one cannon after pressing Space.</div>
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 05 — first shot:</strong> in-game screenshot showing a sphere spawned in front of at least one cannon after pressing LMB.</div>
 
-  <div class="build-note"><strong>Monday wrap-up:</strong> You authored two Blueprint classes, set up Enhanced Input from scratch, and connected player input to a function call across actors. That's the entire Blueprint communication pattern in miniature. Wednesday we add motion, impact, animation, destruction, and polish — and revisit Get All Actors of Class with a better pattern.</div>
+  <div class="build-note"><strong>Monday wrap-up:</strong> You authored two Blueprint classes, set up Enhanced Input from scratch (and learned to take ownership of the engine's defaults by replacing the IMC), and connected player input to a function call across actors. That's the entire Blueprint communication pattern in miniature. Wednesday we add motion, impact, animation, destruction, and polish — and revisit Get All Actors of Class with a better pattern.</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -510,7 +537,7 @@ code {
     <span class="arrow">→</span> <span class="node">Destroy Actor</span> <span class="arrow">(target: Self)</span>
   </div>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, Space. The cannonball should now <strong>fly forward, hit a wall, and disappear</strong>. <span class="tag tag-checkpoint">CHECKPOINT</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, LMB. The cannonball should now <strong>fly forward, hit a wall, and disappear</strong>. <span class="tag tag-checkpoint">CHECKPOINT</span></span></label>
 
   <div class="gotcha"><strong>Cannonball flies through walls?</strong> Open the wall mesh's collision settings → make sure it's not set to NoCollision. If you imported a FAB mesh that has no collision, double-click it → Collision menu → Add Box Simplified Collision (or Auto Convex Collision for complex shapes).</div>
 </div>
@@ -542,7 +569,7 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save. Drag <code>BP_Target</code> into your level — replace your Phase 3 barrels and posts with BP_Target instances. Try a mix: some 1-hit (Health = 25), some 2-hit (Health = 50), some 3-hit (Health = 75). <span class="tag tag-vfx">VFX</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Play, Space. Cannonballs hit targets, targets explode and vanish. <span class="tag tag-checkpoint">CHECKPOINT — gameplay loop is alive</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Play, LMB. Cannonballs hit targets, targets explode and vanish. <span class="tag tag-checkpoint">CHECKPOINT — gameplay loop is alive</span></span></label>
 
   <div class="screenshot-cue"><strong>📸 SCREENSHOT 06 — target destroyed:</strong> in-game capture of a barrel mid-explosion or just-destroyed (the FX particles still visible).</div>
 </div>
@@ -578,7 +605,7 @@ code {
 
   <div class="tip"><strong>Functions can't contain Timelines.</strong> If your Fire is a Function (it is, from Phase 6), you'll get a compile error. Convert Fire from a Function to a <strong>Custom Event</strong>: My Blueprint → right-click Fire → Convert to Event. Custom Events live in the Event Graph and can host Timelines, Delays, and other latent nodes. Functions can't.</div>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, Space. The cannon mesh should kick back along its X-axis when fired and snap forward. <span class="tag tag-checkpoint">CHECKPOINT — recoil</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, LMB. The cannon mesh should kick back along its X-axis when fired and snap forward. <span class="tag tag-checkpoint">CHECKPOINT — recoil</span></span></label>
 
   <div class="screenshot-cue"><strong>📸 SCREENSHOT 07 — recoil graph:</strong> the Event Graph showing the Fire event → RecoilTimeline → Spawn flow, AND the Update pin → SetRelativeLocation chain. Bonus points for a clean alignment.</div>
 </div>
@@ -603,28 +630,78 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">In the Fracture panel: select the Geometry Collection → choose <strong>Uniform</strong> fracture mode → Voronoi Sites = <code>20</code> → click <strong>Fracture</strong>. The wall is now broken into 20 chunks (visible in the Outliner Hierarchy view).</span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">In the GC's Details panel → <strong>Physics → Object Type</strong> = <code>Destructible</code>, <strong>Simulating</strong> = checked, <strong>Damage Threshold</strong> array = <code>[100]</code> for cluster level 0.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Still in the Fracture panel → with the GC selected → click <strong>Cluster</strong> → set Cluster level = 1 → this groups the chunks so they don't all break independently — they cluster, then break into their constituent pieces only when enough strain is applied to that cluster. <span class="tag tag-class">CHAOS</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_Cannonball</code>'s On Component Hit, <em>before</em> Destroy Actor, add this wiring to actually trigger the break (Apply Damage alone won't break a Geometry Collection — Chaos needs a physics impulse or a Field):</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Select the Geometry Collection in the level → Details panel → <strong>Physics</strong> section:<br>
+  &nbsp;&nbsp;• <strong>Object Type</strong> = <code>Destructible</code><br>
+  &nbsp;&nbsp;• <strong>Simulating</strong> = checked<br>
+  &nbsp;&nbsp;• <strong>Damage Threshold</strong> array — set Index 0 = <code>500</code> (cluster level), Index 1 = <code>50</code> (leaf chunks). Higher cluster threshold = wall holds together until a strong hit; lower leaf threshold = once the cluster breaks, individual chunks come apart easily.</span></label>
+
+  <div class="concept-box">
+    <h3>Field Systems — the <em>real</em> Chaos workflow</h3>
+    <p>Chaos breaks happen because something applies <strong>strain</strong> to chunks. A cannonball collision can apply strain directly via impulse, but the workflow Epic intends — and what production projects use — is a <strong>Field System</strong>.</p>
+    <p>A Field System is a Blueprint-style graph that <em>describes a function over space</em>: "at this position, deliver this much strain (or force, or velocity, or angular impulse) to anything listening." When a Field System Actor is in the level, the Chaos solver evaluates that function every tick and applies the result to nearby Geometry Collections.</p>
+    <p>Why this matters: Field Systems give you spatial control (radial falloff, planes, boxes), per-chunk targeting (only chunks at this depth, only chunks of this size), and composability (combine multiple fields with operators). It's how Epic does cinematic destruction in their demos. Direct impulse works for one-shot prototypes; Field Systems are how you build a real destruction system.</p>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>Content/_project/Destruction</code> → right-click → <strong>FX → Field System</strong> → name it <code>FS_CannonImpact</code>. Open it. <span class="tag tag-vfx">FIELD</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the Field System editor's Construction Script (the editor opens to it by default), build this graph:</span></label>
 
   <div class="bp-wiring">
-    <strong>BP_Cannonball — extend On Component Hit:</strong><br><br>
-    <span class="node">On Component Hit</span> <span class="arrow">→</span> <span class="node">Apply Damage</span> <span class="arrow">(existing)</span><br>
-    <span class="arrow">→</span> <span class="node">Cast to GeometryCollectionActor</span> <span class="arrow">(target: Other Actor)</span><br>
-    &nbsp;&nbsp;<span class="arrow">Success →</span> <span class="node">As GeometryCollectionActor → Get Geometry Collection Component</span><br>
-    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Add Impulse At Location</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Impulse</span> = <span class="node">Get Velocity (self) * 50</span><br>
+    <strong>FS_CannonImpact — Construction Script:</strong><br><br>
+    <span class="node">Construction Script</span> <span class="arrow">→</span> <span class="node">Add Field Command</span><br>
+    &nbsp;&nbsp;<span class="pin">Target</span> = <span class="value">External Cluster Strain</span><br>
+    &nbsp;&nbsp;<span class="pin">Field</span> <span class="arrow">←</span> <span class="node">Radial Falloff</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Magnitude</span> = <span class="value">1500.0</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Min Range</span> = <span class="value">0.0</span>, <span class="pin">Max Range</span> = <span class="value">1.0</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Default</span> = <span class="value">0.0</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Radius</span> = <span class="value">300.0</span> <span class="arrow">(impact area in cm)</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Position</span> = <span class="node">GetActorLocation (self)</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Falloff</span> = <span class="value">Linear</span>
+  </div>
+
+  <div class="tip"><strong>Reading this field in plain English:</strong> "At my actor's location, deliver up to 1500 units of External Cluster Strain to any chunks within 300 cm, falling off linearly to zero at the edge." That's enough to break a cluster (threshold 500) but the falloff means only chunks near the impact actually fly.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Save and close <code>FS_CannonImpact</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Now create the carrier actor. <code>_project/Blueprints</code> → new Blueprint Class → parent <strong>Actor</strong> → name <code>BP_ImpactField</code>. <span class="tag tag-class">CLASS</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Components → + Add → <strong>Field System Component</strong> → make it root → Details panel → <strong>Field System</strong> property = <code>FS_CannonImpact</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the Event Graph: <code>Event BeginPlay</code> → <strong>Set Life Span</strong> (target Self, In Lifespan = <code>0.1</code>). The actor exists for one tenth of a second — long enough for the field to deliver one strain pulse — then auto-destroys. <span class="tag tag-checkpoint">CHECKPOINT</span></span></label>
+
+  <div class="gotcha"><strong>Why Set Life Span and not Destroy Actor immediately?</strong> The Field System Component needs at least one tick to send its commands to the Chaos solver. Destroying on BeginPlay can race the solver and produce no break. 0.1 seconds is generous and still invisible to the player.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save <code>BP_ImpactField</code>. Drag one into the level for a manual test — if you placed it overlapping a fractured wall, the wall should break the moment you press Play. Delete the test instance after.</span></label>
+
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 08 — Field System graph:</strong> the FS_CannonImpact Construction Script with the Add Field Command → Radial Falloff chain visible.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Now wire the cannonball to spawn an impact field on every hit. Open <code>BP_Cannonball</code> → <code>On Component Hit</code>. Insert a new branch <em>before</em> the existing Apply Damage:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_Cannonball — On Component Hit (full updated chain):</strong><br><br>
+    <span class="node">On Component Hit (Ball)</span> <span class="arrow">→</span> <span class="node">Spawn Actor From Class</span><br>
+    &nbsp;&nbsp;<span class="pin">Class</span> = <span class="value">BP_ImpactField</span><br>
+    &nbsp;&nbsp;<span class="pin">Spawn Transform</span> <span class="arrow">←</span> <span class="node">Make Transform</span><br>
     &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Location</span> = <span class="value">Hit Location (from hit event)</span><br>
+    &nbsp;&nbsp;<span class="pin">Collision Handling Override</span> = <span class="value">Always Spawn, Ignore Collisions</span><br>
+    <span class="arrow">→</span> <span class="node">Apply Damage</span> <span class="arrow">(existing — for BP_Target)</span><br>
+    &nbsp;&nbsp;<span class="pin">Damaged Actor</span> = <span class="value">Other Actor</span><br>
+    &nbsp;&nbsp;<span class="pin">Base Damage</span> = <span class="value">25.0</span><br>
+    &nbsp;&nbsp;<span class="pin">Damage Causer</span> = <span class="value">Self</span><br>
     <span class="arrow">→</span> <span class="node">Destroy Actor (Self)</span>
   </div>
 
-  <div class="gotcha"><strong>Performance discipline:</strong> Keep total simulating chunks under ~150 across the level at any time. Use the Geometry Collection's <strong>Sleep</strong> settings to put debris to sleep after motion stops. Add a <strong>Lifespan</strong> override on broken pieces to despawn them after 5 seconds. This is non-negotiable — without it your framerate will tank as students stack up debris.</div>
+  <div class="tip"><strong>Why spawn the field on <em>every</em> hit, not just GC hits?</strong> Geometry Collections are the only actors that listen to External Cluster Strain. Walls, targets, and everything else simply ignore the field — no cast required, no branch, no overhead. The field broadcasts; only listeners react. This is one of the most elegant patterns in Chaos.</div>
 
-  <div class="tip"><strong>Field Systems vs impulses.</strong> The "Field System" approach (Master Field → Radial Falloff Field → Strain) is more flexible and the "real" Chaos workflow. We're using direct impulse here for simplicity and because it ties cleanly to the physics of a cannonball hit. If you want to go deeper, the Epic Sample "Content Examples" project has a Chaos map with Field examples — open it after you submit.</div>
+  <div class="gotcha"><strong>Performance discipline (non-negotiable):</strong> Each BP_ImpactField spawn = one field command in the Chaos solver. At our cannon firing rate this is fine. If you ever loop fire (Bonus B's explosive shells, for instance), watch the frame time — each shell spawns its own field. Limit total simulating chunks across the level to ~150 max. Use the GC's <strong>Sleep Threshold</strong> (Details → Physics) so resting chunks don't keep ticking. Add a <strong>Lifespan</strong> override to broken pieces (in the GC's Sim → Cluster Group settings) to despawn them after 5 seconds.</div>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Play, Space, hit the fractured wall. Chunks should fly. <span class="tag tag-checkpoint">CHECKPOINT — Chaos</span></span></label>
+  <div class="tip"><strong>Going further:</strong> The Field System editor supports composition — Add Field Command nodes can chain, and operator nodes (Sum, Cull, Conversion) let you combine fields. Try adding a second Add Field Command targeting <strong>Linear Velocity</strong> with a smaller Radial Falloff to add an outward push to broken chunks, on top of the strain that breaks them. Epic's <strong>Content Examples</strong> sample project has a "Chaos" map with eight or so pre-built Field System examples worth dissecting after you submit.</div>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 08 — Chaos break:</strong> in-game capture mid-shatter, with chunks visibly separating and ideally still in motion.</div>
+  <label class="item"><input type="checkbox"><span class="item-text">Play, LMB, hit the fractured wall. Chunks should fly outward from the impact point with realistic falloff (chunks closest to the hit fly hardest, chunks at the edge of the radius barely move). <span class="tag tag-checkpoint">CHECKPOINT — Chaos via Field</span></span></label>
+
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 09 — Chaos break via Field:</strong> in-game capture mid-shatter, with chunks visibly separating along a radial pattern from the hit point.</div>
 </div>
 
 <div class="phase">
@@ -644,11 +721,11 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_Cannon</code> Fire → after Spawn Actor → <strong>Get Player Controller</strong> (Player Index 0) → <strong>Client Start Camera Shake</strong> → Shake Class = <code>CS_CannonFire</code>, Scale = <code>1.0</code>. <span class="tag tag-anim">FEEL</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, Space. Each shot should now have: muzzle flash, fire sound, screen shake, projectile flying, hit sound, target/wall reaction. <span class="tag tag-checkpoint">CHECKPOINT — game feel</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, LMB. Each shot should now have: muzzle flash, fire sound, screen shake, projectile flying, hit sound, target/wall reaction. <span class="tag tag-checkpoint">CHECKPOINT — game feel</span></span></label>
 
   <div class="tip"><strong>Optional bonus:</strong> add a smoke trail to the cannonball. In <code>BP_Cannonball</code> → Components → + Add Particle System (or Niagara) Component → assign a thin smoke effect → child of Ball. It will follow the cannonball through the air for free. <span class="tag tag-bonus">BONUS</span></div>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 09 — full game feel:</strong> in-game capture of a single cannon firing with muzzle flash visible, projectile in flight, and ideally a target reacting in the same frame. This is your money shot for the gameplay video thumbnail.</div>
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 10 — full game feel:</strong> in-game capture of a single cannon firing with muzzle flash visible, projectile in flight, and ideally a target reacting in the same frame. This is your money shot for the gameplay video thumbnail.</div>
 </div>
 
 <div class="phase">
@@ -668,13 +745,226 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text"><strong>Rename the output folder</strong> to <code>LastName_FirstInitial_GAME266_Cannons</code> (e.g., <code>Smith_J_GAME266_Cannons</code>). Zip the entire folder. <span class="tag tag-checkpoint">DELIVERABLE 1 / 3</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text"><strong>Capture gameplay video</strong> (~30–60 seconds): use OBS, ShareX, or Windows Game Bar (Win+G). Show: starting the level, firing both cannons, hitting targets, breaking the Chaos wall, recoil and VFX visible. Save as <code>LastName_FirstInitial_GAME266_Cannons.mp4</code>. <span class="tag tag-checkpoint">DELIVERABLE 2 / 3</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Capture gameplay video</strong> (~30–60 seconds): use OBS, ShareX, or Windows Game Bar (Win+G). Show: starting the level, firing both cannons, hitting targets, breaking the Chaos wall via the Field System, recoil and VFX visible. <strong>If you completed any bonuses, demo them in the video</strong> — charge shots, Tab-switching to explosive ammo, score ticking, slow-mo break. Save as <code>LastName_FirstInitial_GAME266_Cannons.mp4</code>. <span class="tag tag-checkpoint">DELIVERABLE 2 / 3</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text"><strong>Compile your Blueprint screenshots packet</strong> — the nine screenshots flagged 📸 throughout this guide. Take them in the editor (<strong>not</strong> in the packaged build). For each: zoom out enough that all wires are readable, leave the comment boxes you placed visible, use Windows Snipping Tool or PrtScn. Drop them in a folder named <code>LastName_FirstInitial_GAME266_BPScreenshots</code>. <span class="tag tag-checkpoint">DELIVERABLE 3 / 3</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Compile your Blueprint screenshots packet</strong> — the ten screenshots flagged 📸 throughout the required phases (bonus screenshots are optional but appreciated). Take them in the editor (<strong>not</strong> in the packaged build). For each: zoom out enough that all wires are readable, leave the comment boxes you placed visible, use Windows Snipping Tool or PrtScn. Drop them in a folder named <code>LastName_FirstInitial_GAME266_BPScreenshots</code>. <span class="tag tag-checkpoint">DELIVERABLE 3 / 3</span></span></label>
 
   <div class="tip"><strong>Comment boxes earn rubric points.</strong> In any Event Graph, select a group of nodes → press <strong>C</strong> → type a label → set the comment color via the comment's Details panel. They show your <em>intent</em> to a grader who has to read your wiring. Use them on every Fire event, every On Hit, every BeginPlay flow.</div>
 
   <label class="item"><input type="checkbox"><span class="item-text"><strong>Submit:</strong> upload the zipped executable folder to Dropbox (link in Blackboard). Upload the gameplay video and the BP screenshots folder (zipped) to Blackboard. Confirm all three before closing. <span class="tag tag-checkpoint">DONE</span></span></label>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section-divider">
+  <span>Advanced Bonuses — Optional, Encouraged</span>
+  <span class="section-line"></span>
+  <span class="section-btn-group">
+    <button class="section-resume-btn" title="Check all steps above this section">Resume here</button>
+    <button class="section-complete-btn" title="Check all steps in this section">Complete section</button>
+  </span>
+</div>
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="bonus-banner">
+  <h3>Read this before starting any bonus phase</h3>
+  <p>The grade rubric is satisfied by Phases 1–11. <strong>Bonuses are not required and are not graded as a separate criterion</strong> — they push your work into the "exceeds" zone of each rubric criterion (cleaner Cannon Functionality for Bonus A, deeper Animation/Bonus Features for Bonus C and D, more polished Level Design for the HUD in Bonus C).</p>
+  <p>Each bonus is independent. You can do A without B, C without A, etc. Pick what excites you. If you only have time for one, <strong>Bonus B (inheritance + explosive ammo)</strong> teaches the most transferable Blueprint pattern.</p>
+  <p>Save before you start each bonus. If something breaks the base build, revert.</p>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#FFE0B2;color:#BF360C;">Bonus A</span>
+    <span class="phase-title">Charge-shot mechanic — hold LMB to power up</span>
+    <span class="tag tag-advanced" style="margin-left:auto;">ADVANCED</span>
+  </div>
+  <div class="phase-note">Hold the fire button to charge; release to fire. Charge level scales projectile speed. Teaches Enhanced Input triggers, latent timelines, and passing parameters to your Fire event.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>IA_Fire</code> → in the <strong>Triggers</strong> array, click <strong>+</strong> → add <strong>Hold</strong> trigger → set Hold Time Threshold = <code>0.05</code> (so a quick click still registers as a held value of zero, just briefly). The action will now fire <strong>Started</strong>, <strong>Triggered</strong> (every frame while held), and <strong>Completed</strong> (on release). <span class="tag tag-input">INPUT</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_ThirdPersonCharacter</code>. Add a Float variable <code>ChargeAmount</code> (default 0.0) and a Float variable <code>MaxChargeTime</code> (default 1.5).</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the Event Graph, find your existing <code>IA_Fire</code> event node. The execution pin you used in Phase 6 was <strong>Triggered</strong>. Now wire the three pins differently:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_ThirdPersonCharacter — IA_Fire (charge mechanic):</strong><br><br>
+    <span class="node">IA_Fire (Started)</span> <span class="arrow">→</span> <span class="node">Set ChargeAmount</span> = <span class="value">0.0</span><br><br>
+    <span class="node">IA_Fire (Triggered)</span> <span class="arrow">→</span> <span class="node">Set ChargeAmount</span><br>
+    &nbsp;&nbsp;<span class="pin">Value</span> = <span class="node">Clamp (ChargeAmount + DeltaSeconds / MaxChargeTime, 0, 1)</span><br>
+    <span class="arrow">(use Get World Delta Seconds; this normalizes charge to 0–1 over MaxChargeTime)</span><br><br>
+    <span class="node">IA_Fire (Completed)</span> <span class="arrow">→</span> <span class="node">Get All Actors of Class</span> <span class="arrow">(BP_Cannon)</span><br>
+    <span class="arrow">→</span> <span class="node">For Each Loop</span> <span class="arrow">→</span> <span class="node">Array Element → Fire</span><br>
+    &nbsp;&nbsp;<span class="pin">ChargePower</span> = <span class="value">ChargeAmount</span> <span class="arrow">(new input — see next step)</span><br>
+    <span class="arrow">→</span> <span class="node">Set ChargeAmount</span> = <span class="value">0.0</span> <span class="arrow">(reset for next shot)</span>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_Cannon</code> → My Blueprint → right-click your <code>Fire</code> Custom Event → click the <strong>+ Inputs</strong> arrow on the event node → add input <code>ChargePower</code>, type Float, default 0.0.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the <code>Fire</code> Custom Event flow, after you Spawn Actor From Class for the cannonball, drag off the <strong>Return Value</strong> (the spawned BP_Cannonball reference) and apply the charge:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_Cannon — Fire (charge integration):</strong><br><br>
+    <span class="node">Spawn Actor From Class (BP_Cannonball)</span> <span class="arrow">→ Return Value →</span> <span class="node">Get Projectile Movement Component</span><br>
+    <span class="arrow">→</span> <span class="node">Set Velocity in Local Space</span><br>
+    &nbsp;&nbsp;<span class="pin">New Velocity</span> = <span class="node">Make Vector</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">X</span> = <span class="node">Lerp (1500.0, 5000.0, ChargePower)</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Y</span> = <span class="value">0</span>, <span class="pin">Z</span> = <span class="value">0</span>
+  </div>
+
+  <div class="tip"><strong>Why <em>Set Velocity in Local Space</em>?</strong> The cannonball spawns oriented along the muzzle's rotation, so its local +X is "forward out of the cannon." Setting velocity in local space lets you specify "forward" without doing rotation math.</div>
+
+  <div class="gotcha"><strong>BP_Cannonball's ProjectileMovement has Initial Speed = 3000.</strong> Setting Velocity overrides Initial Speed only if Set Velocity runs after BeginPlay (which Spawn Actor → Set Velocity guarantees). If your shots all fly at 3000 regardless of charge, you're hitting the wrong component or your Lerp is upstream of the Spawn.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Optional show-off:</strong> add a charge-up VFX. In <code>BP_ThirdPersonCharacter</code>'s IA_Fire (Triggered), spawn a Niagara system at the closest cannon's muzzle, scaled by ChargeAmount, and destroy it on Completed. Or change a material parameter on the cannon barrel that glows brighter as charge grows. <span class="tag tag-bonus">SHOW-OFF</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play. Tap LMB → light shot. Hold LMB for ~1.5s, release → heavy shot that flies way faster. <span class="tag tag-checkpoint">CHECKPOINT — Bonus A</span></span></label>
+
+  <div class="screenshot-cue"><strong>📸 BONUS SCREENSHOT A:</strong> Event Graph of BP_ThirdPersonCharacter showing all three IA_Fire trigger pins (Started, Triggered, Completed) wired distinctly. Optional but appreciated.</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#FFE0B2;color:#BF360C;">Bonus B</span>
+    <span class="phase-title">Inheritance — explosive ammo via child Blueprints</span>
+    <span class="tag tag-advanced" style="margin-left:auto;">ADVANCED</span>
+  </div>
+  <div class="phase-note">Two ammo types — standard and explosive. Press Tab to switch. Teaches the single most important OOP concept you will use in Unreal: child Blueprints inheriting and overriding parent behavior.</div>
+
+  <div class="concept-box">
+    <h3>Why inheritance instead of "just copy BP_Cannonball"?</h3>
+    <p>If you duplicated <code>BP_Cannonball</code> to make an explosive variant, you'd have two separate Blueprints. Fix a bug in one — you have to remember to fix it in the other. Add a feature to the base — you'd have to copy it across. That's how technical debt is born.</p>
+    <p>With a <strong>child Blueprint</strong>, the child <em>inherits</em> the parent's components, variables, and event graph. You only override what's different. Bug fix in the parent → free for the child. New feature in the parent → free for the child.</p>
+    <p>This is why class hierarchies exist in code. You're about to use it visually, with no syntax.</p>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>_project/Blueprints</code> → right-click <code>BP_Cannonball</code> → <strong>Create Child Blueprint Class</strong> → name <code>BP_Cannonball_Explosive</code>. Open it. <span class="tag tag-class">CHILD</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Notice the Components panel: <code>Ball</code> (inherited) and <code>ProjectileMovement</code> (inherited) are present but greyed-out — you can change their settings on the child without modifying the parent. Select the <code>Ball</code> mesh → set <strong>Material</strong> override to anything red/glowing (or import a fireball material from FAB later) so the explosive shell looks visually distinct.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open the Event Graph → you'll see the parent's <code>OnComponentHit (Ball)</code> chain is here too, but greyed out. <strong>Right-click the OnComponentHit node → Add call to parent function</strong>. This creates a stub you can extend — and importantly, lets you decide what the parent's behavior should still do. Delete the stub for now; we're going to override entirely.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the child's Event Graph, build a fresh <code>OnComponentHit</code> override:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_Cannonball_Explosive — On Component Hit (override):</strong><br><br>
+    <span class="node">On Component Hit (Ball)</span> <span class="arrow">→</span> <span class="node">Spawn Actor From Class (BP_ImpactField)</span><br>
+    &nbsp;&nbsp;<span class="pin">Location</span> = <span class="value">Hit Location</span><br>
+    <span class="arrow">→</span> <span class="node">Apply Radial Damage With Falloff</span><br>
+    &nbsp;&nbsp;<span class="pin">Origin</span> = <span class="value">Hit Location</span><br>
+    &nbsp;&nbsp;<span class="pin">Damage Inner Radius</span> = <span class="value">200.0</span> <span class="arrow">(full damage zone)</span><br>
+    &nbsp;&nbsp;<span class="pin">Damage Outer Radius</span> = <span class="value">600.0</span> <span class="arrow">(falloff zone)</span><br>
+    &nbsp;&nbsp;<span class="pin">Base Damage</span> = <span class="value">75.0</span><br>
+    &nbsp;&nbsp;<span class="pin">Minimum Damage</span> = <span class="value">10.0</span><br>
+    &nbsp;&nbsp;<span class="pin">Damage Falloff</span> = <span class="value">1.0</span> <span class="arrow">(linear)</span><br>
+    &nbsp;&nbsp;<span class="pin">Damage Type Class</span> = <span class="value">DamageType</span> <span class="arrow">(default is fine)</span><br>
+    &nbsp;&nbsp;<span class="pin">Hurt Causer</span> = <span class="node">Self</span><br>
+    <span class="arrow">→</span> <span class="node">Spawn Emitter at Location</span> <span class="arrow">(big explosion VFX)</span><br>
+    <span class="arrow">→</span> <span class="node">Destroy Actor (Self)</span>
+  </div>
+
+  <div class="tip"><strong>Apply Radial Damage With Falloff</strong> automatically calls Event Any Damage on every actor inside the outer radius. Your existing <code>BP_Target</code> already listens for that — so explosive shells will damage every target in the blast radius without any further wiring. That's the elegance of working through Apply Damage.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save the child. Drag <code>BP_Cannonball_Explosive</code> into the level for a quick test (it'll just sit there with no projectile movement velocity since nothing fired it) → confirm the mesh override and that it can be placed. Delete the test instance.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Now wire ammo switching. Open <code>BP_ThirdPersonCharacter</code> → My Blueprint → + Variable → <code>CurrentAmmoClass</code>, type <strong>Class Reference</strong> → Class filter = <code>BP_Cannonball</code>. Default value = <code>BP_Cannonball</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>_project/Inputs</code> → new Input Action → name <code>IA_SwitchAmmo</code>, Value Type = Digital. Open <code>IMC_Cannons</code> → add a mapping: <code>IA_SwitchAmmo</code> on <strong>Tab</strong>. Save both. <span class="tag tag-input">INPUT</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_ThirdPersonCharacter</code> → Event Graph → drop the <code>EnhancedInputAction IA_SwitchAmmo</code> event → on Triggered:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_ThirdPersonCharacter — IA_SwitchAmmo (toggle):</strong><br><br>
+    <span class="node">IA_SwitchAmmo (Triggered)</span> <span class="arrow">→</span> <span class="node">Branch</span> <span class="arrow">(Condition: CurrentAmmoClass == BP_Cannonball)</span><br>
+    &nbsp;&nbsp;<span class="arrow">True →</span> <span class="node">Set CurrentAmmoClass</span> = <span class="value">BP_Cannonball_Explosive</span><br>
+    &nbsp;&nbsp;<span class="arrow">False →</span> <span class="node">Set CurrentAmmoClass</span> = <span class="value">BP_Cannonball</span><br>
+    <span class="arrow">→</span> <span class="node">Print String</span> <span class="arrow">(text:</span> <span class="value">"Ammo: " + CurrentAmmoClass.GetName()</span><span class="arrow">)</span>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_Cannon</code> → on the <code>Fire</code> Custom Event → add another input: <code>AmmoClass</code>, type <strong>Class Reference</strong>, filter <code>BP_Cannonball</code>, default <code>BP_Cannonball</code>. In the Spawn Actor From Class node, change the <strong>Class</strong> pin from a hard-coded <code>BP_Cannonball</code> to the new <code>AmmoClass</code> input.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_ThirdPersonCharacter</code>'s IA_Fire dispatch (the For Each Loop calling Fire on each cannon) → wire <code>CurrentAmmoClass</code> into Fire's new <code>AmmoClass</code> input pin.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play. LMB fires standard. Tab to switch. LMB now fires explosive shells that radial-damage every target in their blast radius. <span class="tag tag-checkpoint">CHECKPOINT — Bonus B</span></span></label>
+
+  <div class="tip"><strong>Going further:</strong> Make this an <strong>Enum</strong> instead of a Class Reference. Define <code>E_AmmoType</code> with values Standard / Explosive / Cluster, give the player a <code>Map (Enum → Class)</code> variable, and switch types via array index instead of a single binary toggle. That's how a real ammo wheel works.</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#FFE0B2;color:#BF360C;">Bonus C</span>
+    <span class="phase-title">Score HUD with UMG</span>
+    <span class="tag tag-advanced" style="margin-left:auto;">ADVANCED</span>
+  </div>
+  <div class="phase-note">A score that ticks up as targets die, displayed in a Widget Blueprint added to the viewport. Teaches GameMode as the gameplay scoreboard, UMG widget creation, and binding text to a remote variable.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>Content/_project/Blueprints</code> → new Blueprint Class → parent <strong>Game Mode Base</strong> → name <code>BP_CannonsGameMode</code>. <span class="tag tag-class">GAMEMODE</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_CannonsGameMode</code> → My Blueprint → + Variable → <code>Score</code>, type Integer, default 0. Make sure its <strong>Instance Editable</strong> is OFF (we don't expose this to level placement) but <strong>Blueprint Read Only</strong> can stay off so other BPs can write to it via a setter function.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">+ Function → <code>AddScore</code> → input <code>Points</code> Integer → body: <code>Score = Score + Points</code>. Compile, Save.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">World Settings → <strong>GameMode Override</strong> = <code>BP_CannonsGameMode</code>. (You're swapping out the template's BP_ThirdPersonGameMode — the Default Pawn Class will fall back to engine defaults, so set it explicitly.) Class Defaults of <code>BP_CannonsGameMode</code> → <strong>Default Pawn Class</strong> = <code>BP_ThirdPersonCharacter</code>.</span></label>
+
+  <div class="gotcha"><strong>Forgot to set Default Pawn Class?</strong> You'll spawn into the level as a floating camera. Open BP_CannonsGameMode → Class Defaults panel → look for the four pawn-class slots (Pawn, Player Controller, HUD, Game State).</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_Target</code>. In the Event Any Damage flow, in the branch where Health &lt;= 0 (just before Destroy Actor), insert: <strong>Get Game Mode</strong> → <strong>Cast to BP_CannonsGameMode</strong> → on Success → call <strong>AddScore</strong> with Points = <code>10</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Now build the widget. <code>Content/_project</code> → new folder <code>UI</code>. Right-click in UI → <strong>User Interface → Widget Blueprint</strong> → parent <strong>User Widget</strong> → name <code>WBP_HUD</code>. Open it. <span class="tag tag-class">UMG</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the Designer tab: drag a <strong>Canvas Panel</strong> as root if not already present. Drag a <strong>Text</strong> widget into the canvas → anchor it top-left → set Position to (40, 40), Size to Auto. Set <strong>Font Size</strong> = 36, <strong>Color</strong> = white, <strong>Outline</strong> size 2 with black outline color. Name the text widget <code>ScoreText</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Select <code>ScoreText</code> → in the Details panel next to the <strong>Text</strong> property, click <strong>Bind</strong> → <strong>Create Binding</strong>. This drops you in the Graph tab inside an auto-generated function. Build:</span></label>
+
+  <div class="bp-wiring">
+    <strong>WBP_HUD — Get_ScoreText_Text_0 (binding):</strong><br><br>
+    <span class="node">Function entry</span> <span class="arrow">→</span> <span class="node">Get Game Mode</span> <span class="arrow">→</span> <span class="node">Cast to BP_CannonsGameMode</span><br>
+    &nbsp;&nbsp;<span class="arrow">Success →</span> <span class="node">As BP_CannonsGameMode → Score</span><br>
+    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Format Text</span> <span class="arrow">("Score: {0}", arg = Score)</span><br>
+    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Return Node</span> <span class="arrow">(Return Value pin)</span><br>
+    &nbsp;&nbsp;<span class="arrow">Cast Failed →</span> <span class="node">Return Node</span> <span class="arrow">(Return Value = "Score: 0")</span>
+  </div>
+
+  <div class="gotcha"><strong>Bindings tick every frame.</strong> Cheap for a single Cast and an int read. For anything more expensive (Get All Actors of Class, line traces), don't use a binding — use Event Dispatchers from the Game Mode to push updates only when score changes. We're keeping it simple here.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save <code>WBP_HUD</code>. Open <code>BP_ThirdPersonCharacter</code> → Event BeginPlay → at the end of the existing chain, add: <strong>Create Widget</strong> (Class = WBP_HUD, Owning Player = self's controller) → <strong>Add to Viewport</strong>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play. Score "0" appears top-left. Destroy a target → ticks to 10. Destroy another → 20. <span class="tag tag-checkpoint">CHECKPOINT — Bonus C</span></span></label>
+
+  <div class="screenshot-cue"><strong>📸 BONUS SCREENSHOT C:</strong> in-game capture of the HUD displaying score after at least one target kill, AND the WBP_HUD designer view showing the bound ScoreText widget.</div>
+
+  <div class="tip"><strong>Going further:</strong> add per-target-type scoring. Give <code>BP_Target</code> a <code>PointValue</code> variable, default 10. Pass <code>PointValue</code> into <code>AddScore</code> instead of a hard-coded 10. Now barrels can be 5, posts 15, the boss target 100. Designers love this because they can tune economy without touching the score-tracking code.</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#FFE0B2;color:#BF360C;">Bonus D</span>
+    <span class="phase-title">Slow-mo cinematic on Chaos break</span>
+    <span class="tag tag-advanced" style="margin-left:auto;">ADVANCED</span>
+  </div>
+  <div class="phase-note">When a Geometry Collection breaks, time briefly dilates so the player can savor the shatter. Teaches Set Global Time Dilation, latent Delay nodes, and why "feel" usually comes from time, not visuals.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_Cannonball</code>'s OnComponentHit, after the existing chain, add a check: was the thing we hit a Geometry Collection? Insert this AFTER the BP_ImpactField spawn but BEFORE Destroy Actor:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_Cannonball — OnComponentHit (slow-mo branch):</strong><br><br>
+    <span class="arrow">(after BP_ImpactField spawn)</span><br>
+    <span class="node">Cast to GeometryCollectionActor</span> <span class="arrow">(target: Other Actor)</span><br>
+    &nbsp;&nbsp;<span class="arrow">Success →</span> <span class="node">Set Global Time Dilation</span> <span class="arrow">(World Context: Self, Time Dilation: 0.25)</span><br>
+    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Delay</span> <span class="arrow">(Duration: 0.4 — runs in dilated time, so feels like ~1.6s real)</span><br>
+    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Set Global Time Dilation</span> <span class="arrow">(Time Dilation: 1.0 — restore)</span>
+  </div>
+
+  <div class="tip"><strong>Why 0.25 dilation for 0.4s?</strong> 0.25 is "obviously slow but readable." 0.4s of dilated time at 0.25× scale = roughly 1.6 seconds real-world — long enough to register, short enough not to feel sluggish. Tune to taste.</div>
+
+  <div class="gotcha"><strong>The Delay is a latent node — it can't live in a Function.</strong> Your OnComponentHit is an event in the Event Graph, so this works. If you tried to put this in a Function, the Delay node would refuse to compile. (Same restriction as Timelines from Phase 9.)</div>
+
+  <div class="gotcha"><strong>Multiple breaks during dilation?</strong> If two cannonballs hit two GCs within the slow-mo window, the second hit's "Set Time Dilation 1.0" runs first when its Delay completes, and the first hit's "Set 1.0" then runs against an already-normal world. Players won't notice. If they do, gate this with a bool: <code>IsInSlowMo</code> — only enter slow-mo if it's false. Set true on entry, false on exit.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Show-off polish:</strong> instead of just dilating time, also play a low rumble sound on the slow-mo entry and a "snap back" whoosh on exit. PlaySound2D works for both. <span class="tag tag-bonus">SHOW-OFF</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, LMB on the fractured wall. Time should drop to a quarter speed for the duration of the shatter, then snap back. <span class="tag tag-checkpoint">CHECKPOINT — Bonus D</span></span></label>
+
+  <div class="screenshot-cue"><strong>📸 BONUS SCREENSHOT D:</strong> in-game capture of the Chaos shatter mid-slo-mo, with chunks visibly suspended in the air. This is your <em>actual</em> money shot if you complete this bonus — use it as the gameplay video thumbnail.</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -691,7 +981,7 @@ code {
 <div class="checklist-final">
   <h3>Self-check before you submit</h3>
   <label class="item"><input type="checkbox"><span class="item-text">Project default map = <code>MAP_CannonRange</code> (the .exe opens straight into your level, not an empty world).</span></label>
-  <label class="item"><input type="checkbox"><span class="item-text">Pressing Space fires cannons. Cannonballs travel, hit, react. No crashes during a 60-second play test.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Clicking LMB fires cannons. Cannonballs travel, hit, react. No crashes during a 60-second play test.</span></label>
   <label class="item"><input type="checkbox"><span class="item-text">At least one Chaos Geometry Collection breaks when hit.</span></label>
   <label class="item"><input type="checkbox"><span class="item-text">Cannons recoil when fired (Timeline animation visible).</span></label>
   <label class="item"><input type="checkbox"><span class="item-text">All Blueprints, levels, inputs, and your custom assets live under <code>Content/_project/</code>.</span></label>
@@ -740,13 +1030,13 @@ code {
 
 <div class="doc-footer">
   GAME 266 Core Principles: Game Tech &nbsp;·&nbsp; Professor Lindsey &nbsp;·&nbsp; SCAD Atlanta<br>
-  Build Guide v1.0 &nbsp;·&nbsp; Unreal Engine 5.6.1 &nbsp;·&nbsp; <em>Our Business is Fun.</em>
+  Build Guide v1.1 &nbsp;·&nbsp; Unreal Engine 5.6.1 &nbsp;·&nbsp; <em>Our Business is Fun.</em>
 </div>
 
 <script>
 (function() {
   // ====== Progress tracking with localStorage persistence ======
-  const STORAGE_KEY = 'game266_cannons_progress_v1';
+  const STORAGE_KEY = 'game266_cannons_progress_v2';
   const checkboxes = Array.from(document.querySelectorAll('.item input[type="checkbox"], .checklist-final input[type="checkbox"]'));
   // Assign sequential data-idx to every checkbox so save/restore is stable
   checkboxes.forEach((cb, i) => cb.setAttribute('data-idx', i));
