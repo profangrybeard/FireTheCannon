@@ -708,7 +708,7 @@ details.shot .shot-quota-warn {
     &nbsp;&nbsp;<span class="arrow">→ (Loop Body)</span> <span class="node">Array Element → Fire</span> <span class="arrow">(call Fire on each cannon)</span>
   </div>
 
-  <div class="gotcha"><strong>Get All Actors of Class is expensive.</strong> It scans the entire world. Fine for one shot per second on a level with two cannons. <em>Don't</em> use it on Tick. In a real game you'd cache references at BeginPlay. We'll talk about that on Wednesday — for now, simplicity wins.</div>
+  <div class="gotcha"><strong>Get All Actors of Class is expensive.</strong> It scans the entire world. Fine for one shot per second on a level with two cannons. <em>Don't</em> use it on Tick. In a real game you'd cache cannon references in an array on BeginPlay and iterate that — same For Each, no world scan. We're keeping the GAAOC version here because it makes the lesson visible; just remember the better pattern exists for when you do this for real.</div>
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, press Play, click <strong>Left Mouse Button</strong>. <strong>A sphere should fly out of each cannon</strong> (well — appear in front of each cannon and just hang there. It has no movement yet. That's correct for Monday.) <span class="tag tag-checkpoint">CHECKPOINT — Monday goal achieved</span></span></label>
 
@@ -739,7 +739,7 @@ details.shot .shot-quota-warn {
   </div>
 </details>
 
-  <div class="build-note"><strong>Monday wrap-up:</strong> You authored two Blueprint classes, set up Enhanced Input from scratch (and learned to take ownership of the engine's defaults by replacing the IMC), and connected player input to a function call across actors. That's the entire Blueprint communication pattern in miniature. Wednesday we add motion, impact, animation, destruction, and polish — and revisit Get All Actors of Class with a better pattern.</div>
+  <div class="build-note"><strong>Monday wrap-up:</strong> You authored two Blueprint classes, set up Enhanced Input from scratch (and learned to take ownership of the engine's defaults by replacing the IMC), and connected player input to a function call across actors. That's the entire Blueprint communication pattern in miniature. Wednesday we add motion, impact, animation, destruction, and polish.</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -765,7 +765,7 @@ details.shot .shot-quota-warn {
   <label class="item"><input type="checkbox"><span class="item-text">Select the ProjectileMovement component → Details panel:<br>
   &nbsp;&nbsp;• <strong>Initial Speed</strong> = <code>3000</code><br>
   &nbsp;&nbsp;• <strong>Max Speed</strong> = <code>3000</code><br>
-  &nbsp;&nbsp;• <strong>Project Gravity Scale</strong> = <code>1.0</code> (arc) or <code>0.0</code> (laser-flat). Pick what feels right.<br>
+  &nbsp;&nbsp;• <strong>Projectile Gravity Scale</strong> = <code>1.0</code> (arc) or <code>0.0</code> (laser-flat). Pick what feels right.<br>
   &nbsp;&nbsp;• <strong>Should Bounce</strong> = off (we'll destroy on hit instead)</span></label>
 
   <label class="item"><input type="checkbox"><span class="item-text">Select the <code>Ball</code> static mesh component → Details → <strong>Collision Presets</strong> = <code>BlockAllDynamic</code>. <strong>Simulate Physics</strong> stays OFF (the ProjectileMovement component drives motion, not physics). Set <strong>Mass (kg)</strong> doesn't matter when not simulating physics.</span></label>
@@ -1065,7 +1065,7 @@ details.shot .shot-quota-warn {
 
   <label class="item"><input type="checkbox"><span class="item-text"><strong>Hit SFX:</strong> in <code>BP_Cannonball</code> On Component Hit, before Destroy Actor, add Play Sound at Location → an impact/wood-break sound → Location = <code>Hit Location</code>. <span class="tag tag-audio">AUDIO</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text"><strong>Camera shake:</strong> create new Blueprint Class → parent <strong>Legacy Camera Shake</strong> (search "camera shake" — pick the Blueprint variant) → name <code>CS_CannonFire</code>. Open it → Details panel → set Oscillation Duration = <code>0.3</code>, Location Amplitude = <code>2.0</code>, Rotation Amplitude = <code>1.0</code>.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Camera shake:</strong> create new Blueprint Class → parent <strong>Matinee Camera Shake</strong> (search "camera shake" — it's the subclass with oscillation properties) → name <code>CS_CannonFire</code>. Open it → Class Defaults → set <strong>Oscillation Duration</strong> = <code>0.3</code>. Expand <strong>Loc Oscillation</strong> → set <code>X.Amplitude</code> = <code>2.0</code>, <code>Z.Amplitude</code> = <code>2.0</code> (with Frequency around <code>25</code>). Expand <strong>Rot Oscillation</strong> → set <code>Pitch.Amplitude</code> = <code>1.0</code>, <code>Yaw.Amplitude</code> = <code>1.0</code> (Frequency ~<code>25</code>).</span></label>
 
   <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_Cannon</code> Fire → after Spawn Actor → <strong>Get Player Controller</strong> (Player Index 0) → <strong>Client Start Camera Shake</strong> → Shake Class = <code>CS_CannonFire</code>, Scale = <code>1.0</code>. <span class="tag tag-anim">FEEL</span></span></label>
 
@@ -1255,7 +1255,7 @@ details.shot .shot-quota-warn {
     &nbsp;&nbsp;<span class="pin">Minimum Damage</span> = <span class="value">10.0</span><br>
     &nbsp;&nbsp;<span class="pin">Damage Falloff</span> = <span class="value">1.0</span> <span class="arrow">(linear)</span><br>
     &nbsp;&nbsp;<span class="pin">Damage Type Class</span> = <span class="value">DamageType</span> <span class="arrow">(default is fine)</span><br>
-    &nbsp;&nbsp;<span class="pin">Hurt Causer</span> = <span class="node">Self</span><br>
+    &nbsp;&nbsp;<span class="pin">Damage Causer</span> = <span class="node">Self</span><br>
     <span class="arrow">→</span> <span class="node">Spawn Emitter at Location</span> <span class="arrow">(big explosion VFX)</span><br>
     <span class="arrow">→</span> <span class="node">Destroy Actor (Self)</span>
   </div>
