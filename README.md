@@ -13,12 +13,10 @@ destruction, and basic polish (VFX / audio / camera shake).
 
 ## Build Guide
 
-The full step-by-step student walkthrough lives in [index.html](index.html) —
-open it in a browser for the v1.1 guide with checkboxes, screenshot prompts,
-progress saving, and bonus phases.
+Read it here: **https://profangrybeard.github.io/FireTheCannon/**
 
-The guide is also published via GitHub Pages by
-[.github/workflows/static.yml](.github/workflows/static.yml).
+The v1.1 guide includes checkboxes, screenshot prompts, progress saving, and
+bonus phases.
 
 **Structure of the guide:**
 
