@@ -89,6 +89,12 @@ where possible.
 
 ---
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for what changed in each version of the guide.
+
+---
+
 ## License
 
 [MIT](LICENSE) © 2026 profangrybeard
