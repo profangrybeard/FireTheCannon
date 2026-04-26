@@ -140,6 +140,111 @@ code {
 }
 .screenshot-cue strong { color: rgb(74, 20, 140); }
 
+/* Collapsible screenshot blocks */
+details.shot {
+  background: rgb(243, 229, 245);
+  border-left: 4px solid rgb(123, 31, 162);
+  border-radius: 0 8px 8px 0;
+  margin: 8px 0 10px 38px;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow: hidden;
+}
+details.shot summary {
+  padding: 6px 14px;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+details.shot summary::-webkit-details-marker { display: none; }
+details.shot summary::marker { content: ''; }
+details.shot .shot-toggle-icon {
+  font-size: 9px;
+  color: rgb(123, 31, 162);
+  width: 10px;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+  display: inline-block;
+}
+details.shot[open] .shot-toggle-icon { transform: rotate(90deg); }
+details.shot .shot-icon { font-size: 13px; flex-shrink: 0; }
+details.shot .shot-label {
+  font-weight: 600;
+  color: rgb(74, 20, 140);
+  flex: 1;
+  font-size: 12.5px;
+}
+details.shot .shot-done {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: rgb(123, 31, 162);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+details.shot .shot-done:hover { background: rgba(123, 31, 162, 0.08); }
+details.shot .shot-done input[type="checkbox"] {
+  margin: 0;
+  accent-color: rgb(123, 31, 162);
+  width: 13px;
+  height: 13px;
+}
+details.shot .shot-body {
+  padding: 4px 14px 12px 32px;
+  border-top: 1px solid rgba(123, 31, 162, 0.15);
+}
+details.shot .shot-desc { margin: 8px 0; color: rgb(70, 50, 90); }
+details.shot.done {
+  background: rgb(225, 245, 238);
+  border-left-color: rgb(46, 125, 50);
+}
+details.shot.done .shot-label { color: rgb(8, 80, 65); }
+details.shot.done .shot-toggle-icon { color: rgb(46, 125, 50); }
+details.shot.done .shot-done { color: rgb(46, 125, 50); }
+details.shot.done .shot-done input[type="checkbox"] { accent-color: rgb(46, 125, 50); }
+details.shot.done .shot-body { border-top-color: rgba(46, 125, 50, 0.2); }
+details.shot.done .shot-desc { color: rgb(40, 70, 50); }
+
+details.shot .shot-image-area { margin-top: 8px; }
+details.shot .shot-add-btn,
+details.shot .shot-replace-btn,
+details.shot .shot-remove-btn {
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid rgb(200, 180, 220);
+  background: rgb(255, 255, 255);
+  color: rgb(123, 31, 162);
+  font-family: inherit;
+  transition: background 0.15s;
+}
+details.shot .shot-add-btn:hover,
+details.shot .shot-replace-btn:hover { background: rgb(243, 229, 245); }
+details.shot .shot-remove-btn { color: rgb(180, 30, 30); border-color: rgb(220, 180, 180); }
+details.shot .shot-remove-btn:hover { background: rgb(255, 235, 235); }
+
+details.shot .shot-image-wrap { margin-top: 10px; }
+details.shot .shot-img {
+  max-width: 100%;
+  max-height: 480px;
+  display: block;
+  border-radius: 6px;
+  border: 1px solid rgb(200, 180, 220);
+}
+details.shot .shot-image-buttons { margin-top: 6px; display: flex; gap: 6px; }
+details.shot .shot-quota-warn {
+  font-size: 11px;
+  color: rgb(180, 60, 20);
+  margin-top: 6px;
+  font-style: italic;
+}
+
 .concept-box {
   background: rgb(245, 248, 252); border: 1px solid rgb(200, 220, 240);
   border-radius: 10px; padding: 14px 18px; margin: 12px 0 16px 0;
@@ -206,6 +311,24 @@ code {
   .tip strong { color: rgb(140, 180, 230); }
   .screenshot-cue { background: rgb(42, 26, 51); border-left-color: rgb(171, 71, 188); }
   .screenshot-cue strong { color: rgb(206, 147, 216); }
+  details.shot { background: rgb(42, 26, 51); border-left-color: rgb(171, 71, 188); }
+  details.shot .shot-label { color: rgb(206, 147, 216); }
+  details.shot .shot-toggle-icon, details.shot .shot-done { color: rgb(206, 147, 216); }
+  details.shot .shot-done:hover { background: rgba(206, 147, 216, 0.12); }
+  details.shot .shot-body { border-top-color: rgba(206, 147, 216, 0.2); }
+  details.shot .shot-desc { color: rgb(190, 170, 200); }
+  details.shot.done { background: rgb(20, 36, 30); border-left-color: rgb(76, 175, 80); }
+  details.shot.done .shot-label, details.shot.done .shot-toggle-icon, details.shot.done .shot-done { color: rgb(129, 199, 132); }
+  details.shot.done .shot-body { border-top-color: rgba(129, 199, 132, 0.2); }
+  details.shot.done .shot-desc { color: rgb(170, 200, 180); }
+  details.shot .shot-add-btn,
+  details.shot .shot-replace-btn,
+  details.shot .shot-remove-btn { background: rgb(40, 30, 50); border-color: rgb(80, 60, 100); color: rgb(206, 147, 216); }
+  details.shot .shot-add-btn:hover, details.shot .shot-replace-btn:hover { background: rgb(55, 40, 70); }
+  details.shot .shot-remove-btn { color: rgb(255, 140, 140); border-color: rgb(120, 60, 60); }
+  details.shot .shot-remove-btn:hover { background: rgb(60, 30, 30); }
+  details.shot .shot-img { border-color: rgb(80, 60, 100); }
+  details.shot .shot-quota-warn { color: rgb(255, 140, 90); }
   .concept-box { background: rgb(28, 36, 48); border-color: rgb(50, 70, 100); color: rgb(190, 200, 220); }
   .concept-box h3 { color: rgb(140, 180, 230); }
   .naming-table th, .naming-table td { border-color: rgb(60, 60, 60); }
@@ -316,7 +439,32 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Save All (Ctrl+S → "Save Selected" dialog → Save All). Confirm everything is under <code>Content/_project/...</code> — anything that landed elsewhere, drag it into the right folder now. <span class="tag tag-checkpoint">CHECKPOINT</span></span></label>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 01 — folder structure:</strong> Content Browser showing <code>_project</code> expanded with all eight subfolders visible.</div>
+  <details class="shot" data-shot-id="shot-01">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">SCREENSHOT 01 — folder structure</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">Content Browser showing <code>_project</code> expanded with all eight subfolders visible.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 </div>
 
 <div class="phase">
@@ -370,7 +518,32 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Place <strong>2 cannon meshes</strong> (the FAB ones) flanking the Player Start, pointed downrange. They are static meshes for now — we'll replace them with <code>BP_Cannon</code> in Phase 4. <span class="tag tag-checkpoint">CHECKPOINT — playable layout</span></span></label>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 02 — level layout:</strong> top-down view (Numpad 7, or Perspective → Top in the viewport menu) of your range with cannons, walls, and targets visible.</div>
+  <details class="shot" data-shot-id="shot-02">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">SCREENSHOT 02 — level layout</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">top-down view (Numpad 7, or Perspective → Top in the viewport menu) of your range with cannons, walls, and targets visible.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 </div>
 
 <div class="phase">
@@ -392,7 +565,32 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile (top-left of the BP editor) and Save. Drag <code>BP_Cannon</code> from the Content Browser into the level, twice — once on each side of the Player Start. Delete the two raw static-mesh cannons from Phase 3.</span></label>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 03 — BP_Cannon components:</strong> the BP editor with the Components panel expanded, showing <code>CannonMesh</code> as root and <code>Muzzle</code> as its child, and the Viewport showing the arrow positioned at the barrel tip.</div>
+  <details class="shot" data-shot-id="shot-03">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">SCREENSHOT 03 — BP_Cannon components</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">the BP editor with the Components panel expanded, showing <code>CannonMesh</code> as root and <code>Muzzle</code> as its child, and the Viewport showing the arrow positioned at the barrel tip.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 </div>
 
 <div class="phase">
@@ -441,7 +639,32 @@ code {
 
   <div class="gotcha"><strong>Fire prints nothing?</strong> Three things in order: (1) Is your default pawn actually <code>BP_ThirdPersonCharacter</code>? Open World Settings → GameMode Override → Default Pawn Class. (2) Did you Save <code>IMC_Cannons</code> after adding IA_Fire? Input assets need their own save. (3) Did the Add Mapping Context node actually run? Drop a Print String right after BeginPlay to verify.</div>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 04 — input wiring:</strong> the Event Graph chain from BeginPlay through the EnhancedInputLocalPlayerSubsystem to Add Mapping Context, AND the IA_Fire event node connected to Print String.</div>
+  <details class="shot" data-shot-id="shot-04">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">SCREENSHOT 04 — input wiring</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">the Event Graph chain from BeginPlay through the EnhancedInputLocalPlayerSubsystem to Add Mapping Context, AND the IA_Fire event node connected to Print String.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 </div>
 
 <div class="phase">
@@ -489,7 +712,32 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, press Play, click <strong>Left Mouse Button</strong>. <strong>A sphere should fly out of each cannon</strong> (well — appear in front of each cannon and just hang there. It has no movement yet. That's correct for Monday.) <span class="tag tag-checkpoint">CHECKPOINT — Monday goal achieved</span></span></label>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 05 — first shot:</strong> in-game screenshot showing a sphere spawned in front of at least one cannon after pressing LMB.</div>
+  <details class="shot" data-shot-id="shot-05">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">SCREENSHOT 05 — first shot</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">in-game screenshot showing a sphere spawned in front of at least one cannon after pressing LMB.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 
   <div class="build-note"><strong>Monday wrap-up:</strong> You authored two Blueprint classes, set up Enhanced Input from scratch (and learned to take ownership of the engine's defaults by replacing the IMC), and connected player input to a function call across actors. That's the entire Blueprint communication pattern in miniature. Wednesday we add motion, impact, animation, destruction, and polish — and revisit Get All Actors of Class with a better pattern.</div>
 </div>
@@ -571,7 +819,32 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Play, LMB. Cannonballs hit targets, targets explode and vanish. <span class="tag tag-checkpoint">CHECKPOINT — gameplay loop is alive</span></span></label>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 06 — target destroyed:</strong> in-game capture of a barrel mid-explosion or just-destroyed (the FX particles still visible).</div>
+  <details class="shot" data-shot-id="shot-06">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">SCREENSHOT 06 — target destroyed</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">in-game capture of a barrel mid-explosion or just-destroyed (the FX particles still visible).</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 </div>
 
 <div class="phase">
@@ -607,7 +880,32 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, LMB. The cannon mesh should kick back along its X-axis when fired and snap forward. <span class="tag tag-checkpoint">CHECKPOINT — recoil</span></span></label>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 07 — recoil graph:</strong> the Event Graph showing the Fire event → RecoilTimeline → Spawn flow, AND the Update pin → SetRelativeLocation chain. Bonus points for a clean alignment.</div>
+  <details class="shot" data-shot-id="shot-07">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">SCREENSHOT 07 — recoil graph</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">the Event Graph showing the Fire event → RecoilTimeline → Spawn flow, AND the Update pin → SetRelativeLocation chain. Bonus points for a clean alignment.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 </div>
 
 <div class="phase">
@@ -675,7 +973,32 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save <code>BP_ImpactField</code>. Drag one into the level for a manual test — if you placed it overlapping a fractured wall, the wall should break the moment you press Play. Delete the test instance after.</span></label>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 08 — Field System graph:</strong> the FS_CannonImpact Construction Script with the Add Field Command → Radial Falloff chain visible.</div>
+  <details class="shot" data-shot-id="shot-08">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">SCREENSHOT 08 — Field System graph</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">the FS_CannonImpact Construction Script with the Add Field Command → Radial Falloff chain visible.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 
   <label class="item"><input type="checkbox"><span class="item-text">Now wire the cannonball to spawn an impact field on every hit. Open <code>BP_Cannonball</code> → <code>On Component Hit</code>. Insert a new branch <em>before</em> the existing Apply Damage:</span></label>
 
@@ -701,7 +1024,32 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Play, LMB, hit the fractured wall. Chunks should fly outward from the impact point with realistic falloff (chunks closest to the hit fly hardest, chunks at the edge of the radius barely move). <span class="tag tag-checkpoint">CHECKPOINT — Chaos via Field</span></span></label>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 09 — Chaos break via Field:</strong> in-game capture mid-shatter, with chunks visibly separating along a radial pattern from the hit point.</div>
+  <details class="shot" data-shot-id="shot-09">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">SCREENSHOT 09 — Chaos break via Field</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">in-game capture mid-shatter, with chunks visibly separating along a radial pattern from the hit point.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 </div>
 
 <div class="phase">
@@ -725,7 +1073,32 @@ code {
 
   <div class="tip"><strong>Optional bonus:</strong> add a smoke trail to the cannonball. In <code>BP_Cannonball</code> → Components → + Add Particle System (or Niagara) Component → assign a thin smoke effect → child of Ball. It will follow the cannonball through the air for free. <span class="tag tag-bonus">BONUS</span></div>
 
-  <div class="screenshot-cue"><strong>📸 SCREENSHOT 10 — full game feel:</strong> in-game capture of a single cannon firing with muzzle flash visible, projectile in flight, and ideally a target reacting in the same frame. This is your money shot for the gameplay video thumbnail.</div>
+  <details class="shot" data-shot-id="shot-10">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">SCREENSHOT 10 — full game feel</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">in-game capture of a single cannon firing with muzzle flash visible, projectile in flight, and ideally a target reacting in the same frame. This is your money shot for the gameplay video thumbnail.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 </div>
 
 <div class="phase">
@@ -819,7 +1192,32 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play. Tap LMB → light shot. Hold LMB for ~1.5s, release → heavy shot that flies way faster. <span class="tag tag-checkpoint">CHECKPOINT — Bonus A</span></span></label>
 
-  <div class="screenshot-cue"><strong>📸 BONUS SCREENSHOT A:</strong> Event Graph of BP_ThirdPersonCharacter showing all three IA_Fire trigger pins (Started, Triggered, Completed) wired distinctly. Optional but appreciated.</div>
+  <details class="shot" data-shot-id="shot-11">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">BONUS SCREENSHOT A</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">Event Graph of BP_ThirdPersonCharacter showing all three IA_Fire trigger pins (Started, Triggered, Completed) wired distinctly. Optional but appreciated.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 </div>
 
 <div class="phase">
@@ -930,7 +1328,32 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play. Score "0" appears top-left. Destroy a target → ticks to 10. Destroy another → 20. <span class="tag tag-checkpoint">CHECKPOINT — Bonus C</span></span></label>
 
-  <div class="screenshot-cue"><strong>📸 BONUS SCREENSHOT C:</strong> in-game capture of the HUD displaying score after at least one target kill, AND the WBP_HUD designer view showing the bound ScoreText widget.</div>
+  <details class="shot" data-shot-id="shot-12">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">BONUS SCREENSHOT C</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">in-game capture of the HUD displaying score after at least one target kill, AND the WBP_HUD designer view showing the bound ScoreText widget.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 
   <div class="tip"><strong>Going further:</strong> add per-target-type scoring. Give <code>BP_Target</code> a <code>PointValue</code> variable, default 10. Pass <code>PointValue</code> into <code>AddScore</code> instead of a hard-coded 10. Now barrels can be 5, posts 15, the boss target 100. Designers love this because they can tune economy without touching the score-tracking code.</div>
 </div>
@@ -964,7 +1387,32 @@ code {
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, LMB on the fractured wall. Time should drop to a quarter speed for the duration of the shatter, then snap back. <span class="tag tag-checkpoint">CHECKPOINT — Bonus D</span></span></label>
 
-  <div class="screenshot-cue"><strong>📸 BONUS SCREENSHOT D:</strong> in-game capture of the Chaos shatter mid-slo-mo, with chunks visibly suspended in the air. This is your <em>actual</em> money shot if you complete this bonus — use it as the gameplay video thumbnail.</div>
+  <details class="shot" data-shot-id="shot-13">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">BONUS SCREENSHOT D</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">in-game capture of the Chaos shatter mid-slo-mo, with chunks visibly suspended in the air. This is your <em>actual</em> money shot if you complete this bonus — use it as the gameplay video thumbnail.</p>
+    <div class="shot-image-area">
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -1084,12 +1532,28 @@ code {
 
   // Reset all
   document.getElementById('reset-btn').addEventListener('click', () => {
-    if (!confirm('Reset all progress? This cannot be undone.')) return;
+    if (!confirm('Reset all progress, including added screenshots? This cannot be undone.')) return;
     checkboxes.forEach(cb => {
       cb.checked = false;
       cb.closest('.item')?.classList.remove('checked');
     });
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    try { localStorage.removeItem('game266_cannons_shots_v1'); } catch (e) {}
+    // Clear all shot details
+    document.querySelectorAll('details.shot').forEach(d => {
+      d.classList.remove('done');
+      d.open = false;
+      const cb = d.querySelector('.shot-done-cb');
+      if (cb) cb.checked = false;
+      const img = d.querySelector('.shot-img');
+      const wrap = d.querySelector('.shot-image-wrap');
+      const addArea = d.querySelector('.shot-image-area');
+      const warn = d.querySelector('.shot-quota-warn');
+      if (img) img.removeAttribute('src');
+      if (wrap) wrap.hidden = true;
+      if (addArea) addArea.hidden = false;
+      if (warn) warn.hidden = true;
+    });
     updateProgress();
   });
 
@@ -1152,6 +1616,177 @@ code {
   // Init
   load();
   updateProgress();
+})();
+
+// ====== Screenshot capture + state persistence ======
+(function() {
+  const SHOT_KEY = 'game266_cannons_shots_v1';
+  const MAX_DIM = 1600;       // px on the longer edge
+  const JPEG_QUALITY = 0.85;  // 0–1
+
+  function loadAll() {
+    try {
+      const raw = localStorage.getItem(SHOT_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+
+  function saveAll(state) {
+    try {
+      localStorage.setItem(SHOT_KEY, JSON.stringify(state));
+      return { ok: true };
+    } catch (e) {
+      return { ok: false, error: e };
+    }
+  }
+
+  function resizeToDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Could not read file'));
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('Could not decode image'));
+        img.onload = () => {
+          const longer = Math.max(img.width, img.height);
+          const scale = longer > MAX_DIM ? MAX_DIM / longer : 1;
+          const w = Math.round(img.width * scale);
+          const h = Math.round(img.height * scale);
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          // PNG screenshots from "Snipping Tool" become JPEGs here for storage efficiency
+          resolve(canvas.toDataURL('image/jpeg', JPEG_QUALITY));
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function applyState(detail, state) {
+    const id = detail.dataset.shotId;
+    const entry = state[id] || {};
+    const doneCb = detail.querySelector('.shot-done-cb');
+    const wrap = detail.querySelector('.shot-image-wrap');
+    const addArea = detail.querySelector('.shot-image-area');
+    const img = detail.querySelector('.shot-img');
+    const warn = detail.querySelector('.shot-quota-warn');
+
+    // Done state
+    const isDone = !!entry.done;
+    doneCb.checked = isDone;
+    detail.classList.toggle('done', isDone);
+    // Done = auto-open, persistent
+    if (isDone) detail.open = true;
+    else if (entry.openByUser) detail.open = true;
+
+    // Image state
+    if (entry.imageData) {
+      img.src = entry.imageData;
+      wrap.hidden = false;
+      addArea.hidden = true;
+    } else {
+      wrap.hidden = true;
+      addArea.hidden = false;
+      img.removeAttribute('src');
+    }
+
+    // Quota warning state
+    if (entry.quotaWarning) {
+      warn.textContent = 'localStorage full — image is shown this session only and will be lost on reload.';
+      warn.hidden = false;
+    } else {
+      warn.hidden = true;
+    }
+  }
+
+  function patch(id, partial) {
+    const all = loadAll();
+    const cur = all[id] || {};
+    const next = { ...cur, ...partial };
+    // Remove falsy "openByUser" / "done" to keep the JSON small
+    if (next.openByUser === false) delete next.openByUser;
+    if (next.done === false) delete next.done;
+    if (next.imageData === null) delete next.imageData;
+    if (next.quotaWarning === false) delete next.quotaWarning;
+    all[id] = next;
+    if (Object.keys(next).length === 0) delete all[id];
+    return saveAll(all);
+  }
+
+  const details = Array.from(document.querySelectorAll('details.shot'));
+  const state = loadAll();
+
+  details.forEach(detail => {
+    const id = detail.dataset.shotId;
+    applyState(detail, state);
+
+    const doneCb = detail.querySelector('.shot-done-cb');
+    const addBtn = detail.querySelector('.shot-add-btn');
+    const replaceBtn = detail.querySelector('.shot-replace-btn');
+    const removeBtn = detail.querySelector('.shot-remove-btn');
+    const fileInput = detail.querySelector('.shot-file-input');
+    const wrap = detail.querySelector('.shot-image-wrap');
+    const addArea = detail.querySelector('.shot-image-area');
+    const img = detail.querySelector('.shot-img');
+    const warn = detail.querySelector('.shot-quota-warn');
+
+    // Done toggle
+    doneCb.addEventListener('change', () => {
+      const isDone = doneCb.checked;
+      detail.classList.toggle('done', isDone);
+      if (isDone) detail.open = true;
+      patch(id, { done: isDone });
+    });
+
+    // Track manual open/close so a user-opened (but not done) shot stays open across reloads
+    detail.addEventListener('toggle', () => {
+      // Don't override done-driven opens
+      if (detail.classList.contains('done')) return;
+      patch(id, { openByUser: detail.open });
+    });
+
+    // Add / Replace flow — both open the file picker
+    function openPicker() { fileInput.click(); }
+    addBtn.addEventListener('click', openPicker);
+    replaceBtn.addEventListener('click', openPicker);
+
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        const dataUrl = await resizeToDataUrl(file);
+        img.src = dataUrl;
+        wrap.hidden = false;
+        addArea.hidden = true;
+        const result = patch(id, { imageData: dataUrl, quotaWarning: false });
+        if (!result.ok) {
+          // Hit quota — image still shown, but warn the user
+          warn.textContent = 'localStorage full — image is shown this session only and will be lost on reload.';
+          warn.hidden = false;
+          patch(id, { quotaWarning: true, imageData: null });
+        } else {
+          warn.hidden = true;
+        }
+      } catch (err) {
+        warn.textContent = 'Could not load image: ' + (err.message || err);
+        warn.hidden = false;
+      }
+      // Reset the input so picking the same file again still triggers change
+      fileInput.value = '';
+    });
+
+    removeBtn.addEventListener('click', () => {
+      img.removeAttribute('src');
+      wrap.hidden = true;
+      addArea.hidden = false;
+      warn.hidden = true;
+      patch(id, { imageData: null, quotaWarning: false });
+    });
+  });
 })();
 </script>
 
