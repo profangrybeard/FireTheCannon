@@ -15,7 +15,7 @@ destruction, and basic polish (VFX / audio / camera shake).
 
 Read it here: **https://profangrybeard.github.io/FireTheCannon/**
 
-The v1.1 guide includes checkboxes, screenshot prompts, progress saving, and
+The v1.2 guide includes checkboxes, screenshot prompts, progress saving, and
 bonus phases.
 
 **Structure of the guide:**
