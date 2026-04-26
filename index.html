@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAME 266 — Fire the Cannons! Build Guide v1.0</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: rgb(26, 26, 26);
+  background: rgb(255, 255, 255);
+  padding: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.doc-header { border-bottom: 3px solid rgb(0, 51, 102); padding-bottom: 1rem; margin-bottom: 0.5rem; }
+.doc-header h1 { font-size: 20px; font-weight: 700; color: rgb(0, 51, 102); }
+.doc-header .subtitle { font-size: 14px; color: rgb(46, 117, 182); font-weight: 500; margin-top: 2px; }
+.doc-header .meta { font-size: 12px; color: rgb(102, 102, 102); margin-top: 4px; line-height: 1.5; }
+.doc-header .tagline { font-size: 11px; color: rgb(153, 153, 153); margin-top: 4px; font-style: italic; }
+
+.progress-bar { margin: 1rem 0 1.5rem; }
+.progress-track { height: 6px; background: rgb(240, 240, 240); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: rgb(29, 158, 117); border-radius: 3px; transition: width 0.3s; width: 0%; }
+.progress-label { font-size: 13px; color: rgb(102, 102, 102); margin-top: 6px; }
+
+.session-controls { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.session-controls button {
+  font-size: 12px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  border: 1px solid rgb(221, 221, 221); background: rgb(245, 245, 245);
+  color: rgb(102, 102, 102); font-family: inherit; transition: background 0.15s;
+}
+.session-controls button:hover { background: rgb(238, 238, 238); }
+
+.section-divider {
+  display: flex; align-items: center; gap: 8px; margin: 2.5rem 0 1rem;
+  font-size: 13px; font-weight: 600; color: rgb(0, 51, 102);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.section-divider .section-line { flex: 1; height: 1px; background: rgb(0, 51, 102); opacity: 0.3; }
+
+.section-btn-group { display: flex; gap: 6px; margin-left: auto; }
+.section-complete-btn, .section-resume-btn {
+  font-size: 11px; padding: 2px 8px; border-radius: 4px; cursor: pointer;
+  border: 1px solid; font-family: inherit; transition: 0.15s; white-space: nowrap;
+}
+.section-complete-btn { background: rgb(232, 245, 233); color: rgb(46, 125, 50); border-color: rgb(165, 214, 167); }
+.section-complete-btn:hover { background: rgb(200, 230, 201); }
+.section-resume-btn { background: rgb(227, 242, 253); color: rgb(21, 101, 192); border-color: rgb(144, 202, 249); }
+.section-resume-btn:hover { background: rgb(187, 222, 251); }
+
+.phase { margin-bottom: 2rem; }
+.phase-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  padding-bottom: 8px; border-bottom: 0.5px solid rgb(221, 221, 221);
+}
+.phase-num { font-size: 12px; font-weight: 500; padding: 2px 10px; border-radius: 8px; white-space: nowrap; }
+.phase-title { font-size: 16px; font-weight: 500; }
+.phase-note { font-size: 13px; color: rgb(102, 102, 102); margin-bottom: 12px; font-style: italic; line-height: 1.5; padding-left: 12px; }
+
+.item {
+  display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px;
+  border-radius: 8px; cursor: pointer; transition: background 0.15s;
+}
+.item:hover { background: rgb(245, 245, 245); }
+.item input[type="checkbox"] { margin-top: 3px; flex-shrink: 0; accent-color: rgb(29, 158, 117); width: 16px; height: 16px; }
+.item-text { font-size: 14px; line-height: 1.6; }
+.item.checked .item-text { color: rgb(153, 153, 153); text-decoration: line-through; }
+
+code {
+  font-family: Menlo, Consolas, monospace; font-size: 12.5px;
+  background: rgb(245, 245, 245); padding: 1px 5px; border-radius: 3px;
+  color: rgb(80, 80, 80);
+}
+
+.tag {
+  display: inline-block; font-size: 11px; font-weight: 500;
+  padding: 1px 8px; border-radius: 8px; margin-left: 6px; vertical-align: middle;
+}
+.tag-screenshot { background: rgb(243, 229, 245); color: rgb(123, 31, 162); }
+.tag-checkpoint { background: rgb(225, 245, 238); color: rgb(8, 80, 65); }
+.tag-class { background: rgb(227, 242, 253); color: rgb(21, 101, 192); }
+.tag-input { background: rgb(255, 243, 224); color: rgb(230, 81, 0); }
+.tag-vfx { background: rgb(243, 229, 245); color: rgb(74, 20, 140); }
+.tag-audio { background: rgb(224, 242, 241); color: rgb(0, 105, 92); }
+.tag-anim { background: rgb(255, 235, 238); color: rgb(183, 28, 28); }
+.tag-bonus { background: rgb(255, 248, 225); color: rgb(230, 81, 0); }
+
+.build-note {
+  background: rgb(232, 245, 233); border-left: 4px solid rgb(46, 125, 50);
+  padding: 12px 14px; border-radius: 0 8px 8px 0; margin: 8px 0 8px 38px;
+  font-size: 13px; line-height: 1.7;
+}
+.build-note strong { color: rgb(27, 94, 32); }
+
+.bp-wiring {
+  background: rgb(255, 248, 225); border-left: 4px solid rgb(249, 168, 37);
+  padding: 14px 16px; border-radius: 0 8px 8px 0; margin: 8px 0 10px 38px;
+  font-size: 13px; line-height: 1.8; font-family: Menlo, Consolas, monospace;
+}
+.bp-wiring strong { color: rgb(230, 81, 0); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.bp-wiring .node { color: rgb(21, 101, 192); font-weight: 600; }
+.bp-wiring .pin { color: rgb(46, 125, 50); }
+.bp-wiring .value { color: rgb(183, 28, 28); font-weight: 600; }
+.bp-wiring .arrow { color: rgb(102, 102, 102); }
+
+.gotcha {
+  background: rgb(245, 245, 245); border-left: 3px solid rgb(216, 90, 48);
+  padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 8px 0 8px 38px;
+  font-size: 13px; color: rgb(102, 102, 102); line-height: 1.5;
+}
+.gotcha strong { color: rgb(180, 60, 20); }
+
+.tip {
+  background: rgb(240, 247, 255); border-left: 3px solid rgb(46, 117, 182);
+  padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 8px 0 8px 38px;
+  font-size: 13px; color: rgb(85, 85, 85); line-height: 1.5;
+}
+.tip strong { color: rgb(30, 80, 140); }
+
+.screenshot-cue {
+  background: rgb(243, 229, 245); border-left: 4px solid rgb(123, 31, 162);
+  padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 8px 0 10px 38px;
+  font-size: 13px; line-height: 1.6;
+}
+.screenshot-cue strong { color: rgb(74, 20, 140); }
+
+.concept-box {
+  background: rgb(245, 248, 252); border: 1px solid rgb(200, 220, 240);
+  border-radius: 10px; padding: 14px 18px; margin: 12px 0 16px 0;
+  font-size: 13.5px; line-height: 1.7; color: rgb(50, 60, 80);
+}
+.concept-box h3 {
+  font-size: 14px; color: rgb(0, 51, 102); margin-bottom: 8px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.concept-box p { margin-bottom: 8px; }
+.concept-box p:last-child { margin-bottom: 0; }
+
+.naming-table {
+  width: calc(100% - 38px); margin: 8px 0 10px 38px;
+  border-collapse: collapse; font-size: 12.5px;
+}
+.naming-table th, .naming-table td {
+  border: 1px solid rgb(221, 221, 221); padding: 6px 10px; text-align: left;
+}
+.naming-table th { background: rgb(240, 245, 250); color: rgb(0, 51, 102); font-weight: 600; }
+.naming-table code { background: rgb(255, 248, 225); }
+
+.rubric-table {
+  width: 100%; margin: 12px 0; border-collapse: collapse; font-size: 12.5px;
+}
+.rubric-table th, .rubric-table td {
+  border: 1px solid rgb(200, 200, 200); padding: 8px 10px; vertical-align: top; line-height: 1.5;
+}
+.rubric-table th { background: rgb(0, 51, 102); color: white; font-weight: 600; text-align: left; }
+.rubric-table .crit { background: rgb(240, 245, 250); font-weight: 600; color: rgb(0, 51, 102); }
+.rubric-table .pct { font-weight: 700; color: rgb(46, 117, 182); }
+
+.checklist-final {
+  background: rgb(252, 252, 248); border: 1px dashed rgb(200, 180, 100);
+  border-radius: 10px; padding: 14px 18px; margin: 12px 0;
+}
+.checklist-final h3 { font-size: 14px; color: rgb(120, 90, 0); margin-bottom: 8px; }
+.checklist-final .item { padding-left: 0; }
+
+.doc-footer {
+  margin-top: 2.5rem; padding-top: 1rem;
+  border-top: 2px solid rgb(0, 51, 102);
+  font-size: 11px; color: rgb(136, 136, 136); text-align: center; line-height: 1.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  body { background: rgb(26, 26, 26); color: rgb(224, 224, 224); }
+  .doc-header { border-bottom-color: rgb(46, 117, 182); }
+  .doc-header h1 { color: rgb(107, 174, 214); }
+  .phase-header { border-bottom-color: rgb(51, 51, 51); }
+  .phase-note, .progress-label { color: rgb(153, 153, 153); }
+  .item:hover { background: rgb(37, 37, 37); }
+  .item.checked .item-text { color: rgb(102, 102, 102); }
+  code { background: rgb(45, 45, 45); color: rgb(220, 220, 220); }
+  .build-note { background: rgb(26, 46, 26); border-left-color: rgb(76, 175, 80); }
+  .build-note strong { color: rgb(129, 199, 132); }
+  .bp-wiring { background: rgb(42, 34, 0); border-left-color: rgb(255, 179, 0); }
+  .bp-wiring .node { color: rgb(100, 181, 246); }
+  .bp-wiring .pin { color: rgb(129, 199, 132); }
+  .bp-wiring .value { color: rgb(239, 154, 154); }
+  .gotcha { background: rgb(37, 37, 37); color: rgb(170, 170, 170); }
+  .gotcha strong { color: rgb(255, 140, 90); }
+  .tip { background: rgb(26, 42, 58); color: rgb(176, 196, 222); }
+  .tip strong { color: rgb(140, 180, 230); }
+  .screenshot-cue { background: rgb(42, 26, 51); border-left-color: rgb(171, 71, 188); }
+  .screenshot-cue strong { color: rgb(206, 147, 216); }
+  .concept-box { background: rgb(28, 36, 48); border-color: rgb(50, 70, 100); color: rgb(190, 200, 220); }
+  .concept-box h3 { color: rgb(140, 180, 230); }
+  .naming-table th, .naming-table td { border-color: rgb(60, 60, 60); }
+  .naming-table th { background: rgb(35, 45, 60); color: rgb(140, 180, 230); }
+  .naming-table code { background: rgb(60, 50, 0); color: rgb(255, 220, 130); }
+  .rubric-table th { background: rgb(35, 45, 60); }
+  .rubric-table th, .rubric-table td { border-color: rgb(60, 60, 60); }
+  .rubric-table .crit { background: rgb(28, 36, 48); color: rgb(140, 180, 230); }
+  .rubric-table .pct { color: rgb(140, 180, 230); }
+  .checklist-final { background: rgb(40, 38, 28); border-color: rgb(120, 100, 50); }
+  .checklist-final h3 { color: rgb(220, 190, 100); }
+  .doc-footer { border-top-color: rgb(46, 117, 182); }
+  .tag-screenshot { background: rgb(74, 20, 140); color: rgb(206, 147, 216); }
+  .tag-checkpoint { background: rgb(4, 52, 44); color: rgb(159, 225, 203); }
+  .tag-class { background: rgb(13, 71, 161); color: rgb(144, 202, 249); }
+  .tag-input { background: rgb(120, 50, 0); color: rgb(255, 171, 145); }
+  .tag-vfx { background: rgb(74, 20, 140); color: rgb(206, 147, 216); }
+  .tag-audio { background: rgb(0, 77, 64); color: rgb(128, 203, 196); }
+  .tag-anim { background: rgb(120, 25, 35); color: rgb(239, 154, 154); }
+  .tag-bonus { background: rgb(60, 50, 0); color: rgb(255, 220, 130); }
+  .session-controls button { background: rgb(51, 51, 51); border-color: rgb(68, 68, 68); color: rgb(170, 170, 170); }
+  .session-controls button:hover { background: rgb(68, 68, 68); }
+  .section-complete-btn { background: rgb(26, 46, 26); color: rgb(129, 199, 132); border-color: rgb(46, 125, 50); }
+  .section-complete-btn:hover { background: rgb(37, 64, 37); }
+  .section-resume-btn { background: rgb(26, 34, 51); color: rgb(100, 181, 246); border-color: rgb(21, 101, 192); }
+  .section-resume-btn:hover { background: rgb(37, 48, 64); }
+}
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <h1>GAME 266 — Fire the Cannons! Build Guide v1.0</h1>
+  <div class="subtitle">Your first Blueprint project · Unreal Engine 5.6.1</div>
+  <div class="meta">
+    <strong>Monday:</strong> Phases 1–6 — foundation + first shot &nbsp;·&nbsp;
+    <strong>Wednesday:</strong> Phases 7–12 — impact, animation, destruction, polish<br>
+    <strong>Friday 8 AM:</strong> target submission &nbsp;·&nbsp;
+    <strong>Saturday night:</strong> two-day extension cutoff<br>
+    Take screenshots at every <strong>📸</strong> cue — they go to Blackboard with your final BP screenshots packet.
+  </div>
+  <div class="tagline">Our Business is Fun.</div>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-track"><div class="progress-fill" id="pf" style="width: 0%;"></div></div>
+  <div class="progress-label" id="pl">0 of 0 steps complete</div>
+  <div class="session-controls">
+    <span style="font-size:12px;color:#999;">Progress saves automatically between sessions.</span>
+    <button id="reset-btn">Reset all progress</button>
+  </div>
+</div>
+
+<div class="concept-box">
+  <h3>Why we are doing this project</h3>
+  <p>This is your first time inside a Blueprint. The point is not to memorize nodes — it's to feel the moment when you, the artist, take ownership of how an actor behaves in the world. Every cannon, every projectile, every target you place will have <em>you</em> answering the question "what happens when…?"</p>
+  <p>Blueprint is the artist's access point to gameplay. The components panel works like a Maya/Blender outliner. The event graph is just a flowchart. If you can sketch what should happen on a whiteboard, you can wire it here.</p>
+  <p>Two sessions, twelve phases. Build small, save often, screenshot constantly.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section-divider">
+  <span>Monday — Session 1: Foundation + First Shot</span>
+  <span class="section-line"></span>
+  <span class="section-btn-group">
+    <button class="section-resume-btn" title="Check all steps above this section">Resume here</button>
+    <button class="section-complete-btn" title="Check all steps in this section">Complete section</button>
+  </span>
+</div>
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#E3F2FD;color:#1565C0;">Phase 1</span>
+    <span class="phase-title">Project setup &amp; folder hygiene</span>
+  </div>
+  <div class="phase-note">Naming conventions and folder structure are not bureaucracy — they are how you find your work two weeks from now and how a teammate finds it five minutes from now.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Launch Epic Games Launcher → Unreal Engine → verify <strong>5.6.1</strong> is installed. Older versions render Enhanced Input differently and the screenshots in this guide won't match.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Click <strong>Launch</strong> → New Project → <strong>Games</strong> → <strong>Third Person</strong> template → <strong>Blueprint</strong> (not C++) → <strong>Starter Content: ON</strong> → <strong>Raytracing: OFF</strong> → name it <code>Cannons</code> → Create.</span></label>
+
+  <div class="tip"><strong>Why Third Person?</strong> It hands you a working character, camera, and Enhanced Input mapping context for free. We'll build <em>on top</em> of that scaffolding rather than waste two hours rebuilding it. You'll see how the template is wired and add your own input on top.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the Content Browser, right-click in the <code>Content</code> root → New Folder → name it <code>_project</code>. <strong>This underscore is intentional.</strong> It keeps your work pinned to the top of the alphabetical sort, separated from engine and template content. <span class="tag tag-class">CONVENTION</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Inside <code>_project</code>, create these subfolders: <code>Blueprints</code>, <code>Inputs</code>, <code>Levels</code>, <code>Materials</code>, <code>Meshes</code>, <code>VFX</code>, <code>Audio</code>, <code>Destruction</code>.</span></label>
+
+  <div class="build-note"><strong>Naming conventions you will follow for every asset in this project:</strong></div>
+  <table class="naming-table">
+    <thead><tr><th>Prefix</th><th>Asset Type</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><code>BP_</code></td><td>Blueprint Class</td><td><code>BP_Cannon</code>, <code>BP_Cannonball</code>, <code>BP_Target</code></td></tr>
+      <tr><td><code>IA_</code></td><td>Input Action</td><td><code>IA_Fire</code></td></tr>
+      <tr><td><code>IMC_</code></td><td>Input Mapping Context</td><td><code>IMC_Cannons</code></td></tr>
+      <tr><td><code>SM_</code></td><td>Static Mesh</td><td><code>SM_CannonBarrel</code></td></tr>
+      <tr><td><code>M_</code> / <code>MI_</code></td><td>Material / Material Instance</td><td><code>M_Stone</code> / <code>MI_StoneRed</code></td></tr>
+      <tr><td><code>NS_</code> / <code>NE_</code></td><td>Niagara System / Emitter</td><td><code>NS_MuzzleFlash</code></td></tr>
+      <tr><td><code>S_</code></td><td>Sound Wave / Cue</td><td><code>S_CannonFire</code></td></tr>
+      <tr><td><code>T_</code></td><td>Texture</td><td><code>T_StoneAlbedo</code></td></tr>
+      <tr><td><code>MAP_</code></td><td>Level / Map</td><td><code>MAP_CannonRange</code></td></tr>
+      <tr><td><code>GC_</code></td><td>Geometry Collection (Chaos)</td><td><code>GC_StoneWall</code></td></tr>
+    </tbody>
+  </table>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Save All (Ctrl+S → "Save Selected" dialog → Save All). Confirm everything is under <code>Content/_project/...</code> — anything that landed elsewhere, drag it into the right folder now. <span class="tag tag-checkpoint">CHECKPOINT</span></span></label>
+
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 01 — folder structure:</strong> Content Browser showing <code>_project</code> expanded with all eight subfolders visible.</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#E3F2FD;color:#1565C0;">Phase 2</span>
+    <span class="phase-title">Anatomy of a Blueprint</span>
+  </div>
+  <div class="phase-note">Read this section before you click anything. Three minutes here saves you an hour of being lost in the editor.</div>
+
+  <div class="concept-box">
+    <h3>The four kinds of Blueprint you will meet</h3>
+    <p><strong>Class Blueprint</strong> — the most common. A reusable Actor (or component, or other type) you can drop into the level dozens of times. <code>BP_Cannon</code> is a Class Blueprint. Edit it once, every cannon in the world updates.</p>
+    <p><strong>Level Blueprint</strong> — one per level. Use it for level-specific scripting (a door opens when this specific switch is hit). <em>Avoid putting reusable logic here</em> — it can't be reused in another level.</p>
+    <p><strong>Construction Script</strong> — runs in the editor whenever you place or modify the actor. Artist gold: parametric placement (e.g., a fence BP that auto-generates 12 posts based on a length variable). Does <em>not</em> run during gameplay.</p>
+    <p><strong>Event Graph</strong> — runs at runtime. <code>Event BeginPlay</code>, input events, custom events, hit events all live here. This is where gameplay happens.</p>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open the existing <code>BP_ThirdPersonCharacter</code> (found under <code>Content/ThirdPerson/Blueprints/</code>) and look around. Don't change anything yet. Identify: the <strong>Components panel</strong> (top left), the <strong>Viewport / Construction Script / Event Graph</strong> tabs across the top, the <strong>Details panel</strong> (right), and the <strong>My Blueprint panel</strong> (variables, functions, events).</span></label>
+
+  <div class="tip"><strong>The components panel is your hierarchy.</strong> If you've used Maya, Blender, or Photoshop layers, you already understand it. Each component is a piece of the actor. The root component sets the actor's transform; everything else is parented under it.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_ThirdPersonCharacter</code>'s Event Graph, find the <code>Event BeginPlay</code> node and the chain that adds the input mapping context. <strong>Right-click the IMC reference and "Find References"</strong> to see how it's wired across the whole project. You're going to do this same pattern in Phase 5.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Close <code>BP_ThirdPersonCharacter</code> without saving. We will return to it in Phase 5.</span></label>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#E3F2FD;color:#1565C0;">Phase 3</span>
+    <span class="phase-title">Level + FAB asset pass</span>
+  </div>
+  <div class="phase-note">The level only has to be <em>good enough to test cannons in</em>. Don't art-direct this for two hours — get a playable space, then come back to dress it after the cannon works.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">File → New Level → <strong>Basic</strong> → File → Save Current Level As → save to <code>Content/_project/Levels/MAP_CannonRange</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">World Settings → <strong>GameMode Override</strong> = <code>BP_ThirdPersonGameMode</code> (so the player character spawns in our level).</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Place a <strong>Player Start</strong> (Place Actors panel → search "Player Start") near the front edge of the floor. Press <strong>End</strong> to drop it onto the surface.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open the <strong>FAB</strong> tab (top toolbar → FAB icon, or Window → FAB). Sign in with your Epic account. <span class="tag tag-class">FAB</span></span></label>
+
+  <div class="tip"><strong>FAB filters that save your day:</strong> set price to <strong>Free</strong>, set engine compatibility to <strong>UE 5.6</strong>, and use the <strong>License: Standard</strong> filter so you don't accidentally grab a "Pro" asset that requires extra licensing.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Search FAB for <strong>"cannon"</strong> → pick a free static mesh cannon you like (Quixel and Sketchfab CC0 collections both have several) → click <strong>Add to My Library</strong> → click <strong>Add to Project</strong> → select your Cannons project. Wait for download.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Also grab: a <strong>stone wall / castle wall</strong> set, a <strong>barrel</strong>, and a <strong>target dummy or wooden post</strong>. Free assets only. These will become breakable targets later.</span></label>
+
+  <div class="gotcha"><strong>FAB downloads land outside <code>_project</code>.</strong> That's fine — leave them where FAB puts them. Treat FAB content like engine content: read-only reference. <em>Your</em> derived work (Blueprints, materials, geometry collections) stays inside <code>_project</code>.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Lay out a simple firing range: a flat floor (already there), 3–5 stone wall sections lined up downrange about 1500 units (~15m) from the Player Start, and a few barrels/targets in front of the walls. Don't overthink it — boxes work too.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Place <strong>2 cannon meshes</strong> (the FAB ones) flanking the Player Start, pointed downrange. They are static meshes for now — we'll replace them with <code>BP_Cannon</code> in Phase 4. <span class="tag tag-checkpoint">CHECKPOINT — playable layout</span></span></label>
+
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 02 — level layout:</strong> top-down view (Numpad 7, or Perspective → Top in the viewport menu) of your range with cannons, walls, and targets visible.</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#E3F2FD;color:#1565C0;">Phase 4</span>
+    <span class="phase-title">BP_Cannon — your first Blueprint</span>
+  </div>
+  <div class="phase-note">This is the moment. You are about to author an Actor.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>Content/_project/Blueprints</code> → right-click → <strong>Blueprint Class</strong> → parent class <strong>Actor</strong> → name it <code>BP_Cannon</code>. Double-click to open. <span class="tag tag-class">CLASS</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Components panel → click <strong>+ Add</strong> → <strong>Static Mesh Component</strong> → name it <code>CannonMesh</code> → select it → Details panel → <strong>Static Mesh</strong> = your cannon FAB mesh.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Verify <code>CannonMesh</code> is the <strong>Root</strong> (drag it onto <code>DefaultSceneRoot</code> if needed — it should replace it). The root is what controls the actor's transform.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">+ Add → <strong>Arrow Component</strong> → name it <code>Muzzle</code> → drag it as a child of <code>CannonMesh</code> → in the Viewport, position the arrow at the tip of the cannon barrel, pointing along the barrel's <strong>+X (red)</strong> axis. The arrow's location and rotation = where projectiles spawn and what direction they fly.</span></label>
+
+  <div class="tip"><strong>Why Arrow Component?</strong> It's invisible at runtime, free in performance, and gives you a visible gizmo in the editor for "spawn things here, this way." Every weapon, every spawner, every door's hinge axis in your career will use one.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile (top-left of the BP editor) and Save. Drag <code>BP_Cannon</code> from the Content Browser into the level, twice — once on each side of the Player Start. Delete the two raw static-mesh cannons from Phase 3.</span></label>
+
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 03 — BP_Cannon components:</strong> the BP editor with the Components panel expanded, showing <code>CannonMesh</code> as root and <code>Muzzle</code> as its child, and the Viewport showing the arrow positioned at the barrel tip.</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#FFF3E0;color:#E65100;">Phase 5</span>
+    <span class="phase-title">Enhanced Input — wire the Fire key</span>
+  </div>
+  <div class="phase-note">Input belongs to the <em>player</em>, not the cannon. The player presses Fire; the player tells the cannons to fire. This separation is one of the most important patterns in Unreal.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>Content/_project/Inputs</code> → right-click → <strong>Input → Input Action</strong> → name it <code>IA_Fire</code> → open it → <strong>Value Type</strong> = <code>Digital (bool)</code> → Save. <span class="tag tag-input">INPUT</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Right-click → <strong>Input → Input Mapping Context</strong> → name it <code>IMC_Cannons</code> → open it → click <strong>+</strong> next to "Mappings" → assign action = <code>IA_Fire</code>, key = <strong>Space Bar</strong> → Save.</span></label>
+
+  <div class="concept-box">
+    <h3>Why two assets for one keypress?</h3>
+    <p>The <strong>Input Action</strong> describes <em>what</em> can happen ("the player wants to fire"). The <strong>Input Mapping Context</strong> describes <em>how</em> they trigger it ("space bar, on this device, in this game state"). Splitting them lets you re-bind keys, support gamepads, and swap entire control schemes (driving vs walking vs menu) without touching gameplay code.</p>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_ThirdPersonCharacter</code>. In the Event Graph, find <code>Event BeginPlay</code>. Add the IMC registration chain (or extend it if it already exists for the template's IMC):</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_ThirdPersonCharacter — Event Graph (BeginPlay extension):</strong><br><br>
+    <span class="node">Event BeginPlay</span> <span class="arrow">→</span> <span class="node">Get Controller</span> <span class="arrow">→</span> <span class="node">Cast to PlayerController</span><br>
+    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Get Local Player</span> <span class="arrow">→</span> <span class="node">Get Subsystem</span> <span class="arrow">(class:</span> <span class="value">EnhancedInputLocalPlayerSubsystem</span><span class="arrow">)</span><br>
+    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Add Mapping Context</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Mapping Context</span> = <span class="value">IMC_Cannons</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Priority</span> = <span class="value">0</span>
+  </div>
+
+  <div class="gotcha"><strong>The template already adds its own IMC.</strong> Don't replace that chain — branch off it or chain onto its end. Both contexts can be active at once; that's the point of priority. Your <code>IMC_Cannons</code> at priority 0 sits alongside the template's movement IMC.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Still in <code>BP_ThirdPersonCharacter</code> → right-click in empty Event Graph space → search <code>IA_Fire</code> → pick <strong>EnhancedInputAction IA_Fire</strong>. From its <strong>Triggered</strong> output execution pin, drag off → <strong>Print String</strong> → text = <code>"Fire!"</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, press <strong>Play</strong> in the level. Press <strong>Space</strong>. You should see "Fire!" appear in the top-left of the viewport. <span class="tag tag-checkpoint">CHECKPOINT — input is alive</span></span></label>
+
+  <div class="gotcha"><strong>Nothing happens?</strong> Check three things in order: (1) Is your character actually <code>BP_ThirdPersonCharacter</code> when you press play? Open World Settings → confirm GameMode → confirm Default Pawn Class. (2) Did you Save the IMC asset itself, not just the BP? Input assets need their own save. (3) Did the Add Mapping Context node actually run? Drop a Print String right after BeginPlay to verify.</div>
+
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 04 — input wiring:</strong> the Event Graph chain from BeginPlay through the EnhancedInputLocalPlayerSubsystem to Add Mapping Context, AND the IA_Fire event node connected to Print String.</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#E3F2FD;color:#1565C0;">Phase 6</span>
+    <span class="phase-title">First shot — spawn a cannonball</span>
+  </div>
+  <div class="phase-note">By the end of this phase, pressing space sends a sphere flying out of every cannon. That's Monday's payoff.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>Content/_project/Blueprints</code> → new Blueprint Class → parent <strong>Actor</strong> → name <code>BP_Cannonball</code>. Open it. <span class="tag tag-class">CLASS</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Components → + Add → <strong>Static Mesh Component</strong> → name <code>Ball</code> → make it root → Static Mesh = <code>SM_Sphere</code> from Starter Content (or Engine Content if Starter Content isn't visible: Content Browser → Settings cog → Show Engine Content). Scale = <code>(0.3, 0.3, 0.3)</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, close <code>BP_Cannonball</code>. We're leaving it as a static dumb sphere — Wednesday we add motion and physics. <span class="tag tag-checkpoint">CHECKPOINT</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_Cannon</code> → My Blueprint panel → <strong>+ Function</strong> → name it <code>Fire</code>. (We use a Function rather than a Custom Event for now — Functions show up cleanly when called from outside, and Fire returns nothing.)</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Inside the Fire function, build:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_Cannon — Fire function:</strong><br><br>
+    <span class="node">Fire (entry)</span> <span class="arrow">→</span> <span class="node">Spawn Actor From Class</span><br>
+    &nbsp;&nbsp;<span class="pin">Class</span> = <span class="value">BP_Cannonball</span><br>
+    &nbsp;&nbsp;<span class="pin">Spawn Transform</span> <span class="arrow">←</span> <span class="node">Make Transform</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Location</span> <span class="arrow">←</span> <span class="node">Muzzle → Get World Location</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Rotation</span> <span class="arrow">←</span> <span class="node">Muzzle → Get World Rotation</span><br>
+    &nbsp;&nbsp;<span class="pin">Collision Handling Override</span> = <span class="value">Always Spawn, Ignore Collisions</span>
+  </div>
+
+  <div class="tip"><strong>Why "Always Spawn, Ignore Collisions"?</strong> Spawn Actor's default behavior is to refuse to spawn if the new actor would overlap something. Since the cannonball spawns inside the muzzle, that overlap check would fail every time. We override it.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile and Save <code>BP_Cannon</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Now hook the player's input to the cannons. Open <code>BP_ThirdPersonCharacter</code> → in the Event Graph, find your <code>IA_Fire</code> Triggered branch (currently goes to Print String). Replace the Print String with this:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_ThirdPersonCharacter — IA_Fire Triggered:</strong><br><br>
+    <span class="node">IA_Fire (Triggered)</span> <span class="arrow">→</span> <span class="node">Get All Actors of Class</span><br>
+    &nbsp;&nbsp;<span class="pin">Actor Class</span> = <span class="value">BP_Cannon</span><br>
+    <span class="arrow">→</span> <span class="node">For Each Loop</span><br>
+    &nbsp;&nbsp;<span class="arrow">→ (Loop Body)</span> <span class="node">Array Element → Fire</span> <span class="arrow">(call Fire on each cannon)</span>
+  </div>
+
+  <div class="gotcha"><strong>Get All Actors of Class is expensive.</strong> It scans the entire world. Fine for one shot per second on a level with two cannons. <em>Don't</em> use it on Tick. In a real game you'd cache references at BeginPlay. We'll talk about that on Wednesday — for now, simplicity wins.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, press Play, press Space. <strong>A sphere should fly out of each cannon</strong> (well — appear in front of each cannon and just hang there. It has no movement yet. That's correct for Monday.) <span class="tag tag-checkpoint">CHECKPOINT — Monday goal achieved</span></span></label>
+
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 05 — first shot:</strong> in-game screenshot showing a sphere spawned in front of at least one cannon after pressing Space.</div>
+
+  <div class="build-note"><strong>Monday wrap-up:</strong> You authored two Blueprint classes, set up Enhanced Input from scratch, and connected player input to a function call across actors. That's the entire Blueprint communication pattern in miniature. Wednesday we add motion, impact, animation, destruction, and polish — and revisit Get All Actors of Class with a better pattern.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section-divider">
+  <span>Wednesday — Session 2: Impact, Animation, Destruction, Polish</span>
+  <span class="section-line"></span>
+  <span class="section-btn-group">
+    <button class="section-resume-btn" title="Check all steps above this section">Resume here</button>
+    <button class="section-complete-btn" title="Check all steps in this section">Complete section</button>
+  </span>
+</div>
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#E3F2FD;color:#1565C0;">Phase 7</span>
+    <span class="phase-title">Make the cannonball move and hit</span>
+  </div>
+  <div class="phase-note">A static sphere is not a projectile. Now we make it physics-believable and reactive.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_Cannonball</code> → Components → + Add → <strong>Projectile Movement Component</strong>. (No need to parent it — projectile movement components find the root automatically.)</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Select the ProjectileMovement component → Details panel:<br>
+  &nbsp;&nbsp;• <strong>Initial Speed</strong> = <code>3000</code><br>
+  &nbsp;&nbsp;• <strong>Max Speed</strong> = <code>3000</code><br>
+  &nbsp;&nbsp;• <strong>Project Gravity Scale</strong> = <code>1.0</code> (arc) or <code>0.0</code> (laser-flat). Pick what feels right.<br>
+  &nbsp;&nbsp;• <strong>Should Bounce</strong> = off (we'll destroy on hit instead)</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Select the <code>Ball</code> static mesh component → Details → <strong>Collision Presets</strong> = <code>BlockAllDynamic</code>. <strong>Simulate Physics</strong> stays OFF (the ProjectileMovement component drives motion, not physics). Set <strong>Mass (kg)</strong> doesn't matter when not simulating physics.</span></label>
+
+  <div class="gotcha"><strong>Projectile Movement vs Simulate Physics.</strong> They are <em>not</em> the same thing. ProjectileMovement is a kinematic mover with built-in arc, homing, and bounce options — predictable and cheap. Simulate Physics is full rigid-body simulation — flexible but expensive and unpredictable. For projectiles that just need to fly straight and hit something, ProjectileMovement is the right tool every single time.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_Cannonball</code>'s Components panel, click <code>Ball</code> → in the Details panel, scroll to <strong>Events</strong> section → next to <strong>On Component Hit</strong> click <strong>+</strong>. This drops a new event node into the Event Graph.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Build the hit response:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_Cannonball — On Component Hit:</strong><br><br>
+    <span class="node">On Component Hit (Ball)</span> <span class="arrow">→</span> <span class="node">Apply Damage</span><br>
+    &nbsp;&nbsp;<span class="pin">Damaged Actor</span> = <span class="value">Other Actor</span> <span class="arrow">(from hit event)</span><br>
+    &nbsp;&nbsp;<span class="pin">Base Damage</span> = <span class="value">25.0</span><br>
+    &nbsp;&nbsp;<span class="pin">Damage Causer</span> = <span class="node">Self</span><br>
+    <span class="arrow">→</span> <span class="node">Destroy Actor</span> <span class="arrow">(target: Self)</span>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, Space. The cannonball should now <strong>fly forward, hit a wall, and disappear</strong>. <span class="tag tag-checkpoint">CHECKPOINT</span></span></label>
+
+  <div class="gotcha"><strong>Cannonball flies through walls?</strong> Open the wall mesh's collision settings → make sure it's not set to NoCollision. If you imported a FAB mesh that has no collision, double-click it → Collision menu → Add Box Simplified Collision (or Auto Convex Collision for complex shapes).</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#E3F2FD;color:#1565C0;">Phase 8</span>
+    <span class="phase-title">BP_Target — destroyable barrels and posts</span>
+  </div>
+  <div class="phase-note">Apply Damage on its own does nothing — the actor receiving the damage has to listen for it and decide what to do. That's BP_Target's job.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Right-click in <code>_project/Blueprints</code> → Blueprint Class → parent <strong>Actor</strong> → <code>BP_Target</code>. <span class="tag tag-class">CLASS</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Components → + Add Static Mesh Component → name <code>TargetMesh</code> → root → Static Mesh = a barrel or wooden post you imported. Collision = <code>BlockAllDynamic</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">My Blueprint panel → + Variable → <strong>Health</strong>, type Float, default value <code>50.0</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the Event Graph, right-click → search <code>Event Any Damage</code> → drop the node. Wire it:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_Target — Event Any Damage:</strong><br><br>
+    <span class="node">Event Any Damage</span> <span class="arrow">→</span> <span class="node">Set Health</span><br>
+    &nbsp;&nbsp;<span class="pin">Health</span> = <span class="node">Health - Damage</span><br>
+    <span class="arrow">→</span> <span class="node">Branch</span> <span class="arrow">(Condition: Health &lt;= 0)</span><br>
+    &nbsp;&nbsp;<span class="arrow">True →</span> <span class="node">Spawn Emitter at Location</span> <span class="arrow">(or Spawn System at Location for Niagara — pick any explosion-y FX from Starter Content)</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Location</span> = <span class="node">Get Actor Location</span><br>
+    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Destroy Actor</span> <span class="arrow">(Self)</span>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save. Drag <code>BP_Target</code> into your level — replace your Phase 3 barrels and posts with BP_Target instances. Try a mix: some 1-hit (Health = 25), some 2-hit (Health = 50), some 3-hit (Health = 75). <span class="tag tag-vfx">VFX</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Play, Space. Cannonballs hit targets, targets explode and vanish. <span class="tag tag-checkpoint">CHECKPOINT — gameplay loop is alive</span></span></label>
+
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 06 — target destroyed:</strong> in-game capture of a barrel mid-explosion or just-destroyed (the FX particles still visible).</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#FFEBEE;color:#B71C1C;">Phase 9</span>
+    <span class="phase-title">Recoil animation with a Timeline</span>
+  </div>
+  <div class="phase-note">Timelines are the most artist-native node in Blueprint. If you've ever set keyframes in Maya or scrubbed a curve in After Effects, you already know how to use them.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_Cannon</code> → Event Graph → right-click → search <strong>Add Timeline</strong> → name it <code>RecoilTimeline</code>. Double-click it to enter the Timeline editor. <span class="tag tag-anim">ANIM</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the Timeline editor: + Track → <strong>Add Float Track</strong> → name it <code>RecoilOffset</code>. Set <strong>Length</strong> = <code>0.4</code>. Right-click in the curve area → Add Key:<br>
+  &nbsp;&nbsp;• Key 1: Time = <code>0.0</code>, Value = <code>0.0</code><br>
+  &nbsp;&nbsp;• Key 2: Time = <code>0.05</code>, Value = <code>-30.0</code> <span class="arrow">(snap back fast)</span><br>
+  &nbsp;&nbsp;• Key 3: Time = <code>0.4</code>, Value = <code>0.0</code> <span class="arrow">(ease return)</span><br>
+  Right-click each key → <strong>Auto</strong> interpolation for a smooth curve.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Back in the Event Graph, your RecoilTimeline now has Play / Stop / Reverse pins and an <strong>Update</strong> output (fires every frame the timeline is running) plus <strong>RecoilOffset</strong> (the current curve value).</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the <code>Fire</code> function (or move this logic to a Custom Event called from Fire — see tip below), wire:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_Cannon — Fire flow with recoil:</strong><br><br>
+    <span class="node">Fire (entry)</span> <span class="arrow">→</span> <span class="node">RecoilTimeline (Play from Start)</span><br>
+    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Spawn Actor From Class</span> <span class="arrow">(BP_Cannonball — same as before)</span><br><br>
+    <span class="node">RecoilTimeline (Update)</span> <span class="arrow">→</span> <span class="node">CannonMesh → Set Relative Location</span><br>
+    &nbsp;&nbsp;<span class="pin">New Location</span> <span class="arrow">←</span> <span class="node">Make Vector</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">X</span> = <span class="value">RecoilOffset</span> <span class="arrow">(from timeline)</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Y</span> = <span class="value">0</span>, <span class="pin">Z</span> = <span class="value">0</span>
+  </div>
+
+  <div class="tip"><strong>Functions can't contain Timelines.</strong> If your Fire is a Function (it is, from Phase 6), you'll get a compile error. Convert Fire from a Function to a <strong>Custom Event</strong>: My Blueprint → right-click Fire → Convert to Event. Custom Events live in the Event Graph and can host Timelines, Delays, and other latent nodes. Functions can't.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, Space. The cannon mesh should kick back along its X-axis when fired and snap forward. <span class="tag tag-checkpoint">CHECKPOINT — recoil</span></span></label>
+
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 07 — recoil graph:</strong> the Event Graph showing the Fire event → RecoilTimeline → Spawn flow, AND the Update pin → SetRelativeLocation chain. Bonus points for a clean alignment.</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#FFF8E1;color:#E65100;">Phase 10</span>
+    <span class="phase-title">Chaos Destruction — what it is, what it isn't</span>
+  </div>
+  <div class="phase-note">The headline feature. Used carefully it's the most satisfying thing in this whole project. Used carelessly it's a 30 FPS performance disaster. Read the concept box first.</div>
+
+  <div class="concept-box">
+    <h3>Chaos Destruction — the honest read</h3>
+    <p><strong>What Chaos is designed for:</strong> art-driven, set-piece destruction. A glass window shattering when you walk through. A pillar collapsing in a cinematic. A wooden crate exploding when shot. Hero-moment, on-camera, "look at this cool break" — that's its lane and it's superb at it.</p>
+    <p><strong>What Chaos is NOT:</strong> a true real-time destruction engine. It is not Red Faction Guerrilla's GeoMod. It will not give you a fully-destructible city block where every building piece persists, collides with AI, and survives a multiplayer rollback. Pieces fall asleep, can't be saved across levels easily, are hard to network deterministically, and consume serious CPU when many sim at once.</p>
+    <p><strong>Mental model:</strong> Chaos is a <em>visual effect that happens to use physics</em>, not a physics simulation that happens to look pretty. Treat broken pieces as cosmetic debris — destroy them after a few seconds, don't build gameplay on them.</p>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Window menu → <strong>Fracture</strong> → opens the Fracture Editor panel.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the level, select one of your stone wall pieces. In the Fracture panel → click <strong>New</strong> → save as <code>GC_StoneWall</code> in <code>_project/Destruction</code>. The wall is now a Geometry Collection actor. <span class="tag tag-class">CHAOS</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the Fracture panel: select the Geometry Collection → choose <strong>Uniform</strong> fracture mode → Voronoi Sites = <code>20</code> → click <strong>Fracture</strong>. The wall is now broken into 20 chunks (visible in the Outliner Hierarchy view).</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the GC's Details panel → <strong>Physics → Object Type</strong> = <code>Destructible</code>, <strong>Simulating</strong> = checked, <strong>Damage Threshold</strong> array = <code>[100]</code> for cluster level 0.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_Cannonball</code>'s On Component Hit, <em>before</em> Destroy Actor, add this wiring to actually trigger the break (Apply Damage alone won't break a Geometry Collection — Chaos needs a physics impulse or a Field):</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_Cannonball — extend On Component Hit:</strong><br><br>
+    <span class="node">On Component Hit</span> <span class="arrow">→</span> <span class="node">Apply Damage</span> <span class="arrow">(existing)</span><br>
+    <span class="arrow">→</span> <span class="node">Cast to GeometryCollectionActor</span> <span class="arrow">(target: Other Actor)</span><br>
+    &nbsp;&nbsp;<span class="arrow">Success →</span> <span class="node">As GeometryCollectionActor → Get Geometry Collection Component</span><br>
+    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Add Impulse At Location</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Impulse</span> = <span class="node">Get Velocity (self) * 50</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Location</span> = <span class="value">Hit Location (from hit event)</span><br>
+    <span class="arrow">→</span> <span class="node">Destroy Actor (Self)</span>
+  </div>
+
+  <div class="gotcha"><strong>Performance discipline:</strong> Keep total simulating chunks under ~150 across the level at any time. Use the Geometry Collection's <strong>Sleep</strong> settings to put debris to sleep after motion stops. Add a <strong>Lifespan</strong> override on broken pieces to despawn them after 5 seconds. This is non-negotiable — without it your framerate will tank as students stack up debris.</div>
+
+  <div class="tip"><strong>Field Systems vs impulses.</strong> The "Field System" approach (Master Field → Radial Falloff Field → Strain) is more flexible and the "real" Chaos workflow. We're using direct impulse here for simplicity and because it ties cleanly to the physics of a cannonball hit. If you want to go deeper, the Epic Sample "Content Examples" project has a Chaos map with Field examples — open it after you submit.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Play, Space, hit the fractured wall. Chunks should fly. <span class="tag tag-checkpoint">CHECKPOINT — Chaos</span></span></label>
+
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 08 — Chaos break:</strong> in-game capture mid-shatter, with chunks visibly separating and ideally still in motion.</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#F3E5F5;color:#4A148C;">Phase 11</span>
+    <span class="phase-title">Polish — VFX, audio, camera shake</span>
+  </div>
+  <div class="phase-note">10% of the rubric is "bonus features and animation polish." This phase is the difference between an 80 and a 95.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Muzzle flash:</strong> in <code>BP_Cannon</code> Fire event, before the Spawn Actor, add <strong>Spawn Emitter at Location</strong> (or Spawn System for Niagara) → particle = any explosion/fire VFX from Starter Content (<code>P_Explosion</code> works) → Location = <code>Muzzle → Get World Location</code>, Rotation = <code>Muzzle → Get World Rotation</code>. <span class="tag tag-vfx">VFX</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Cannon fire SFX:</strong> right after the muzzle flash, add <strong>Play Sound at Location</strong> → Sound = any cannon/explosion sound (FAB has free ones — search "cannon shot" or "explosion") → Location = <code>Muzzle → Get World Location</code>. <span class="tag tag-audio">AUDIO</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Hit SFX:</strong> in <code>BP_Cannonball</code> On Component Hit, before Destroy Actor, add Play Sound at Location → an impact/wood-break sound → Location = <code>Hit Location</code>. <span class="tag tag-audio">AUDIO</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Camera shake:</strong> create new Blueprint Class → parent <strong>Legacy Camera Shake</strong> (search "camera shake" — pick the Blueprint variant) → name <code>CS_CannonFire</code>. Open it → Details panel → set Oscillation Duration = <code>0.3</code>, Location Amplitude = <code>2.0</code>, Rotation Amplitude = <code>1.0</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_Cannon</code> Fire → after Spawn Actor → <strong>Get Player Controller</strong> (Player Index 0) → <strong>Client Start Camera Shake</strong> → Shake Class = <code>CS_CannonFire</code>, Scale = <code>1.0</code>. <span class="tag tag-anim">FEEL</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, Space. Each shot should now have: muzzle flash, fire sound, screen shake, projectile flying, hit sound, target/wall reaction. <span class="tag tag-checkpoint">CHECKPOINT — game feel</span></span></label>
+
+  <div class="tip"><strong>Optional bonus:</strong> add a smoke trail to the cannonball. In <code>BP_Cannonball</code> → Components → + Add Particle System (or Niagara) Component → assign a thin smoke effect → child of Ball. It will follow the cannonball through the air for free. <span class="tag tag-bonus">BONUS</span></div>
+
+  <div class="screenshot-cue"><strong>📸 SCREENSHOT 09 — full game feel:</strong> in-game capture of a single cannon firing with muzzle flash visible, projectile in flight, and ideally a target reacting in the same frame. This is your money shot for the gameplay video thumbnail.</div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <span class="phase-num" style="background:#E0F2F1;color:#00695C;">Phase 12</span>
+    <span class="phase-title">Package, capture, submit</span>
+  </div>
+  <div class="phase-note">Three deliverables go to two different places. Read carefully — this section is where students lose easy points.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Set the default map:</strong> Edit → Project Settings → Maps &amp; Modes → <strong>Editor Startup Map</strong> AND <strong>Game Default Map</strong> = <code>MAP_CannonRange</code>. Without this, your packaged build opens an empty default level.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Package:</strong> Platforms (top toolbar) → Windows → <strong>Package Project</strong> → choose an output folder OUTSIDE your project (Desktop is fine). Wait for the build (5–15 minutes the first time). The <strong>Output Log</strong> will tell you when it's done.</span></label>
+
+  <div class="gotcha"><strong>Build fails?</strong> 90% of first-time package failures are: (1) missing platform SDK — Edit → Editor Preferences → Platforms → Windows → install if prompted; (2) a level reference that's still pointing at the template's default map; (3) a node that compiles in PIE but not in a packaged build (rare at our scope). The Output Log says exactly which. Search the error verbatim before asking.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Test the packaged build:</strong> open the output folder → run <code>Cannons.exe</code> → confirm cannons fire, targets break, no crashes.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Rename the output folder</strong> to <code>LastName_FirstInitial_GAME266_Cannons</code> (e.g., <code>Smith_J_GAME266_Cannons</code>). Zip the entire folder. <span class="tag tag-checkpoint">DELIVERABLE 1 / 3</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Capture gameplay video</strong> (~30–60 seconds): use OBS, ShareX, or Windows Game Bar (Win+G). Show: starting the level, firing both cannons, hitting targets, breaking the Chaos wall, recoil and VFX visible. Save as <code>LastName_FirstInitial_GAME266_Cannons.mp4</code>. <span class="tag tag-checkpoint">DELIVERABLE 2 / 3</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Compile your Blueprint screenshots packet</strong> — the nine screenshots flagged 📸 throughout this guide. Take them in the editor (<strong>not</strong> in the packaged build). For each: zoom out enough that all wires are readable, leave the comment boxes you placed visible, use Windows Snipping Tool or PrtScn. Drop them in a folder named <code>LastName_FirstInitial_GAME266_BPScreenshots</code>. <span class="tag tag-checkpoint">DELIVERABLE 3 / 3</span></span></label>
+
+  <div class="tip"><strong>Comment boxes earn rubric points.</strong> In any Event Graph, select a group of nodes → press <strong>C</strong> → type a label → set the comment color via the comment's Details panel. They show your <em>intent</em> to a grader who has to read your wiring. Use them on every Fire event, every On Hit, every BeginPlay flow.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Submit:</strong> upload the zipped executable folder to Dropbox (link in Blackboard). Upload the gameplay video and the BP screenshots folder (zipped) to Blackboard. Confirm all three before closing. <span class="tag tag-checkpoint">DONE</span></span></label>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<div class="section-divider">
+  <span>Submission Checklist &amp; Rubric</span>
+  <span class="section-line"></span>
+  <span class="section-btn-group">
+    <button class="section-resume-btn" title="Check all steps above this section">Resume here</button>
+    <button class="section-complete-btn" title="Check all steps in this section">Complete section</button>
+  </span>
+</div>
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="checklist-final">
+  <h3>Self-check before you submit</h3>
+  <label class="item"><input type="checkbox"><span class="item-text">Project default map = <code>MAP_CannonRange</code> (the .exe opens straight into your level, not an empty world).</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Pressing Space fires cannons. Cannonballs travel, hit, react. No crashes during a 60-second play test.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">At least one Chaos Geometry Collection breaks when hit.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Cannons recoil when fired (Timeline animation visible).</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">All Blueprints, levels, inputs, and your custom assets live under <code>Content/_project/</code>.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">All assets follow naming conventions: <code>BP_</code>, <code>IA_</code>, <code>IMC_</code>, <code>SM_</code>, <code>M_</code>, <code>NS_</code>, <code>S_</code>, <code>MAP_</code>, <code>GC_</code>.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Comment boxes in Event Graphs labeling Fire flow, On Hit flow, BeginPlay flow.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Three files named <code>LastName_FirstInitial_GAME266_Cannons</code> (zip + mp4) and <code>LastName_FirstInitial_GAME266_BPScreenshots</code> (zip).</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Zipped executable uploaded to Dropbox. Video + screenshots uploaded to Blackboard.</span></label>
+</div>
+
+<h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem; color: rgb(0, 51, 102); font-size: 15px;">Grading rubric</h3>
+
+<table class="rubric-table">
+  <thead>
+    <tr>
+      <th>Criterion</th>
+      <th>A (90–100%)</th>
+      <th>B (80–89%)</th>
+      <th>C (70–79%)</th>
+      <th>D / F</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="crit">Level Design &amp; Asset Integration <span class="pct">30%</span></td>
+      <td>Engaging, aesthetically pleasing level. Cannon models well-integrated. Cohesive look.</td>
+      <td>Effective level with good appeal. Minor polish opportunities.</td>
+      <td>Functional but lacking aesthetic appeal. Noticeable placement issues.</td>
+      <td>Basic to non-existent. Poor or absent integration.</td>
+    </tr>
+    <tr>
+      <td class="crit">Cannon Functionality &amp; Interaction <span class="pct">40%</span></td>
+      <td>Fires cleanly on input. Realistic projectile behavior. Satisfying impact damage/destruction.</td>
+      <td>Solid implementation, minor realism issues. Impact present but could hit harder.</td>
+      <td>Adequate but flawed mechanics. Impacts lack detail.</td>
+      <td>Cannons don't fire or function. Projectiles broken.</td>
+    </tr>
+    <tr>
+      <td class="crit">Animation &amp; Bonus Features <span class="pct">30%</span></td>
+      <td>Recoil clean and adds realism. Breakable targets effective and enhance gameplay.</td>
+      <td>Recoil present and contributes. Bonus features have minor issues.</td>
+      <td>Basic recoil. Bonus features lack polish.</td>
+      <td>No recoil or bonus features, or poorly implemented.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="doc-footer">
+  GAME 266 Core Principles: Game Tech &nbsp;·&nbsp; Professor Lindsey &nbsp;·&nbsp; SCAD Atlanta<br>
+  Build Guide v1.0 &nbsp;·&nbsp; Unreal Engine 5.6.1 &nbsp;·&nbsp; <em>Our Business is Fun.</em>
+</div>
+
+<script>
+(function() {
+  // ====== Progress tracking with localStorage persistence ======
+  const STORAGE_KEY = 'game266_cannons_progress_v1';
+  const checkboxes = Array.from(document.querySelectorAll('.item input[type="checkbox"], .checklist-final input[type="checkbox"]'));
+  // Assign sequential data-idx to every checkbox so save/restore is stable
+  checkboxes.forEach((cb, i) => cb.setAttribute('data-idx', i));
+
+  const total = checkboxes.length;
+  const pf = document.getElementById('pf');
+  const pl = document.getElementById('pl');
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const checked = JSON.parse(raw);
+      if (!Array.isArray(checked)) return;
+      checked.forEach(idx => {
+        const cb = checkboxes[idx];
+        if (cb) {
+          cb.checked = true;
+          cb.closest('.item')?.classList.add('checked');
+        }
+      });
+    } catch (e) { /* ignore */ }
+  }
+
+  function save() {
+    const checked = checkboxes.map((cb, i) => cb.checked ? i : -1).filter(i => i >= 0);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(checked)); } catch (e) { /* ignore */ }
+  }
+
+  function updateProgress() {
+    const done = checkboxes.filter(cb => cb.checked).length;
+    const pct = total ? (done / total * 100) : 0;
+    pf.style.width = pct + '%';
+    pl.textContent = done + ' of ' + total + ' steps complete';
+  }
+
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      const item = cb.closest('.item');
+      if (item) item.classList.toggle('checked', cb.checked);
+      save();
+      updateProgress();
+    });
+  });
+
+  // Reset all
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    if (!confirm('Reset all progress? This cannot be undone.')) return;
+    checkboxes.forEach(cb => {
+      cb.checked = false;
+      cb.closest('.item')?.classList.remove('checked');
+    });
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    updateProgress();
+  });
+
+  // ====== Per-section "Resume here" and "Complete section" buttons ======
+  // A section runs from one .section-divider to the next.
+  const dividers = Array.from(document.querySelectorAll('.section-divider'));
+
+  function checkboxesInRange(startEl, endEl) {
+    // Walk the document; collect checkboxes between startEl (exclusive) and endEl (exclusive, or end of body)
+    const all = checkboxes;
+    const startPos = startEl.getBoundingClientRect().top + window.scrollY;
+    const endPos = endEl ? endEl.getBoundingClientRect().top + window.scrollY : Infinity;
+    return all.filter(cb => {
+      const y = cb.getBoundingClientRect().top + window.scrollY;
+      return y > startPos && y < endPos;
+    });
+  }
+
+  function checkboxesBefore(el) {
+    const pos = el.getBoundingClientRect().top + window.scrollY;
+    return checkboxes.filter(cb => (cb.getBoundingClientRect().top + window.scrollY) < pos);
+  }
+
+  dividers.forEach((div, i) => {
+    const next = dividers[i + 1] || null;
+    const resumeBtn = div.querySelector('.section-resume-btn');
+    const completeBtn = div.querySelector('.section-complete-btn');
+
+    if (resumeBtn) {
+      resumeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const before = checkboxesBefore(div);
+        before.forEach(cb => {
+          if (!cb.checked) {
+            cb.checked = true;
+            cb.closest('.item')?.classList.add('checked');
+          }
+        });
+        save();
+        updateProgress();
+      });
+    }
+
+    if (completeBtn) {
+      completeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const within = checkboxesInRange(div, next);
+        within.forEach(cb => {
+          if (!cb.checked) {
+            cb.checked = true;
+            cb.closest('.item')?.classList.add('checked');
+          }
+        });
+        save();
+        updateProgress();
+      });
+    }
+  });
+
+  // Init
+  load();
+  updateProgress();
+})();
+</script>
+
+</body>
+</html>
