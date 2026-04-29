@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GAME 266 — Fire the Cannons! Build Guide v1.2</title>
+<title>GAME 266 — Fire the Cannons! Build Guide v1.4</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -140,6 +140,41 @@ code {
 }
 .screenshot-cue strong { color: rgb(74, 20, 140); }
 
+/* Revision history */
+details.changelog {
+  margin: 8px 0 1.5rem 0;
+  padding: 0;
+  font-size: 12px;
+  background: rgb(248, 248, 250);
+  border: 1px solid rgb(220, 220, 230);
+  border-radius: 8px;
+  overflow: hidden;
+}
+details.changelog summary {
+  cursor: pointer;
+  padding: 6px 12px;
+  font-weight: 500;
+  color: rgb(80, 80, 100);
+  list-style: none;
+  user-select: none;
+}
+details.changelog summary::-webkit-details-marker { display: none; }
+details.changelog summary::marker { content: ''; }
+details.changelog summary:hover { background: rgb(240, 240, 245); }
+details.changelog ul {
+  margin: 0;
+  padding: 4px 12px 12px 32px;
+  border-top: 1px solid rgb(225, 225, 235);
+  list-style: disc;
+  line-height: 1.6;
+}
+details.changelog ul li { margin: 6px 0; color: rgb(80, 80, 100); }
+details.changelog ul li strong { color: rgb(0, 51, 102); }
+details.changelog ul li code {
+  font-size: 11px;
+  background: rgb(238, 238, 245);
+}
+
 /* Collapsible screenshot blocks */
 details.shot {
   background: rgb(243, 229, 245);
@@ -211,6 +246,13 @@ details.shot.done .shot-body { border-top-color: rgba(46, 125, 50, 0.2); }
 details.shot.done .shot-desc { color: rgb(40, 70, 50); }
 
 details.shot .shot-image-area { margin-top: 8px; }
+details.shot .shot-placeholder {
+  font-size: 11.5px;
+  font-style: italic;
+  color: rgb(140, 110, 160);
+  margin: 0 0 8px 0;
+  line-height: 1.5;
+}
 details.shot .shot-add-btn,
 details.shot .shot-replace-btn,
 details.shot .shot-remove-btn {
@@ -311,6 +353,13 @@ details.shot .shot-quota-warn {
   .tip strong { color: rgb(140, 180, 230); }
   .screenshot-cue { background: rgb(42, 26, 51); border-left-color: rgb(171, 71, 188); }
   .screenshot-cue strong { color: rgb(206, 147, 216); }
+  details.changelog { background: rgb(30, 30, 40); border-color: rgb(60, 60, 80); }
+  details.changelog summary { color: rgb(180, 180, 200); }
+  details.changelog summary:hover { background: rgb(40, 40, 55); }
+  details.changelog ul { border-top-color: rgb(50, 50, 70); }
+  details.changelog ul li { color: rgb(180, 180, 200); }
+  details.changelog ul li strong { color: rgb(140, 180, 230); }
+  details.changelog ul li code { background: rgb(45, 45, 55); }
   details.shot { background: rgb(42, 26, 51); border-left-color: rgb(171, 71, 188); }
   details.shot .shot-label { color: rgb(206, 147, 216); }
   details.shot .shot-toggle-icon, details.shot .shot-done { color: rgb(206, 147, 216); }
@@ -328,6 +377,7 @@ details.shot .shot-quota-warn {
   details.shot .shot-remove-btn { color: rgb(255, 140, 140); border-color: rgb(120, 60, 60); }
   details.shot .shot-remove-btn:hover { background: rgb(60, 30, 30); }
   details.shot .shot-img { border-color: rgb(80, 60, 100); }
+  details.shot .shot-placeholder { color: rgb(170, 140, 190); }
   details.shot .shot-quota-warn { color: rgb(255, 140, 90); }
   .concept-box { background: rgb(28, 36, 48); border-color: rgb(50, 70, 100); color: rgb(190, 200, 220); }
   .concept-box h3 { color: rgb(140, 180, 230); }
@@ -364,7 +414,7 @@ details.shot .shot-quota-warn {
 <body>
 
 <div class="doc-header">
-  <h1>GAME 266 — Fire the Cannons! Build Guide v1.2</h1>
+  <h1>GAME 266 — Fire the Cannons! Build Guide v1.4</h1>
   <div class="subtitle">Your first Blueprint project · Unreal Engine 5.6.1</div>
   <div class="meta">
     <strong>Monday:</strong> Phases 1–6 — foundation + first shot &nbsp;·&nbsp;
@@ -372,10 +422,22 @@ details.shot .shot-quota-warn {
     <strong>Bonus phases B1–B4:</strong> optional advanced work — charge shots, ammo inheritance, score HUD, slo-mo break<br>
     <strong>Friday 8 AM:</strong> target submission &nbsp;·&nbsp;
     <strong>Saturday night:</strong> two-day extension cutoff<br>
-    Take screenshots at every <strong>📸</strong> cue — they go to Blackboard with your final BP screenshots packet.
+    The <strong>📸</strong> cues describe what to capture for your final BP screenshots packet that goes to Blackboard. The collapsible reference images inside each cue are instructor reference shots being added over time — you don't need to upload anything to this page.
   </div>
   <div class="tagline">Our Business is Fun.</div>
 </div>
+
+<details class="changelog">
+  <summary>📋 Revision history (v1.4 current)</summary>
+  <ul>
+    <li><strong>v1.4</strong> — Clarified that the inline reference images in the screenshot blocks are instructor notes being added over time, <em>not</em> student-required interaction. Empty blocks now display a "reference image to be added" placeholder. Students still capture their own 10 BP screenshots for the submission packet as before.</li>
+    <li><strong>v1.3</strong> — IMC setup and all player-input wiring (IA_Fire test print, Fire dispatch, Bonus A charge mechanic, Bonus B ammo toggle, Bonus C HUD creation) moved from <code>BP_ThirdPersonCharacter</code> to <code>BP_ThirdPersonPlayerController</code> to match UE 5.6 template architecture. New Phase 2 concept box explains the controller-vs-character split. Bonus C gains an explicit Player Controller Class step + gotcha.</li>
+    <li><strong>v1.2</strong> — Screenshot cues converted to collapsible details blocks with per-shot "done" toggle and inline image-paste (auto-resized, persisted in localStorage). Reset button now also clears stored screenshots.</li>
+    <li><strong>v1.1</strong> — Added four advanced bonus phases (charge-shot, inheritance/explosive ammo, score HUD, slow-mo cinematic). Phase 5 rewritten to <em>replace</em> the template's IMC rather than coexist; Fire moved to LMB so Space stays on Jump. Phase 10 rebuilt around Field Systems instead of direct impulse.</li>
+    <li><strong>v1.0</strong> — Initial two-session build: Phases 1–6 Monday foundation, 7–11 Wednesday impact + animation + Chaos + polish, 12 packaging + submission. Sumo template style.</li>
+  </ul>
+</details>
+
 
 <div class="progress-bar">
   <div class="progress-track"><div class="progress-fill" id="pf" style="width: 0%;"></div></div>
@@ -452,6 +514,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">Content Browser showing <code>_project</code> expanded with all eight subfolders visible.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -486,9 +549,19 @@ details.shot .shot-quota-warn {
 
   <div class="tip"><strong>The components panel is your hierarchy.</strong> If you've used Maya, Blender, or Photoshop layers, you already understand it. Each component is a piece of the actor. The root component sets the actor's transform; everything else is parented under it.</div>
 
-  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_ThirdPersonCharacter</code>'s Event Graph, find the <code>Event BeginPlay</code> node and the chain that adds the input mapping context. <strong>Right-click the IMC reference and "Find References"</strong> to see how it's wired across the whole project. You're going to do this same pattern in Phase 5.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_ThirdPersonCharacter</code>'s Event Graph, browse the existing IA_Move, IA_Look, and IA_Jump action handlers — these are the <em>per-pawn</em> behaviors that respond to input. The character is where you wire up <strong>what the pawn does</strong> when an input fires.</span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Close <code>BP_ThirdPersonCharacter</code> without saving. We will return to it in Phase 5.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Close <code>BP_ThirdPersonCharacter</code>. Now open <code>BP_ThirdPersonPlayerController</code> (same folder). Look at <code>Event BeginPlay</code> — this is where the template adds the input mapping context to the local player's Enhanced Input subsystem. <strong>Right-click the IMC reference and "Find References"</strong> to see how it propagates. You're going to do this same pattern in Phase 5.</span></label>
+
+  <div class="concept-box">
+    <h3>Why input setup lives on the Controller, not the Character</h3>
+    <p>This is a 5.6-era change worth understanding. Earlier UE templates wired the input mapping context onto the <em>Character</em>. The 5.6 template moves it to the <em>Player Controller</em>. Why?</p>
+    <p>The Player Controller represents the <strong>player</strong> — a persistent thing that survives pawn possession changes. The Character represents the <strong>pawn</strong> — a thing that can be possessed, unpossessed, swapped, destroyed, respawned. If your input is on the pawn, every possession swap has to redo input setup. If it's on the controller, it just works.</p>
+    <p>It also lets the controller do <strong>device-aware</strong> input — different IMCs for keyboard/mouse vs gamepad vs touch — without the pawn knowing or caring. The pawn just listens for "IA_Jump fired" and jumps; the controller decides whether that came from a Space key, an A button, or a screen tap.</p>
+    <p><strong>The split:</strong> Controller owns input <em>configuration</em> (which IMCs are active, which devices map where). Character owns pawn <em>behavior</em> (what to do when an action fires).</p>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Close <code>BP_ThirdPersonPlayerController</code> without saving. We'll return to it in Phase 5.</span></label>
 </div>
 
 <div class="phase">
@@ -531,6 +604,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">top-down view (Numpad 7, or Perspective → Top in the viewport menu) of your range with cannons, walls, and targets visible.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -578,6 +652,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">the BP editor with the Components panel expanded, showing <code>CannonMesh</code> as root and <code>Muzzle</code> as its child, and the Viewport showing the arrow positioned at the barrel tip.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -618,26 +693,29 @@ details.shot .shot-quota-warn {
 
   <div class="gotcha"><strong>Why not Space for Fire?</strong> The template's <code>IA_Jump</code> already owns Space. Two actions on the same key in the same context = unpredictable behavior. LMB is also more thematic for "fire" and matches every shooter your students have played. Keep Space for Jump, use LMB for Fire.</div>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_ThirdPersonCharacter</code>. In the Event Graph at <code>Event BeginPlay</code>, find the existing <strong>Add Mapping Context</strong> node (the template wired this for you — its Mapping Context pin currently points to <code>IMC_Default</code>).</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_ThirdPersonPlayerController</code> (under <code>Content/ThirdPerson/Blueprints/</code>). In the Event Graph at <code>Event BeginPlay</code>, find the existing <strong>Add Mapping Context</strong> node — the template wired this for you, and its Mapping Context pin currently points to <code>IMC_Default</code>.</span></label>
 
   <label class="item"><input type="checkbox"><span class="item-text"><strong>Replace</strong> the IMC reference: click the <code>IMC_Default</code> pin value → in the dropdown, select <code>IMC_Cannons</code>. The template's chain is now driving <em>your</em> mapping context.</span></label>
 
   <div class="bp-wiring">
-    <strong>BP_ThirdPersonCharacter — Event BeginPlay (after the swap):</strong><br><br>
-    <span class="node">Event BeginPlay</span> <span class="arrow">→</span> <span class="node">Get Controller</span> <span class="arrow">→</span> <span class="node">Cast to PlayerController</span><br>
-    &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Get Local Player</span> <span class="arrow">→</span> <span class="node">Get Subsystem</span> <span class="arrow">(EnhancedInputLocalPlayerSubsystem)</span><br>
+    <strong>BP_ThirdPersonPlayerController — Event BeginPlay (after the swap):</strong><br><br>
+    <span class="node">Event BeginPlay</span> <span class="arrow">→</span> <span class="node">Get Local Player</span> <span class="arrow">→</span> <span class="node">Get Subsystem</span> <span class="arrow">(EnhancedInputLocalPlayerSubsystem)</span><br>
     &nbsp;&nbsp;<span class="arrow">→</span> <span class="node">Add Mapping Context</span><br>
     &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Mapping Context</span> = <span class="value">IMC_Cannons</span> <span class="arrow">(was IMC_Default)</span><br>
     &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Priority</span> = <span class="value">0</span>
   </div>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Still in <code>BP_ThirdPersonCharacter</code> → right-click in empty Event Graph space → search <code>IA_Fire</code> → pick <strong>EnhancedInputAction IA_Fire</strong>. From its <strong>Triggered</strong> output execution pin, drag off → <strong>Print String</strong> → text = <code>"Fire!"</code>.</span></label>
+  <div class="tip"><strong>Notice there's no Cast to PlayerController.</strong> Earlier templates wired this from the Character, which had to <em>cast its Controller</em> to PlayerController to get the Local Player. Since we're already <em>in</em> the controller, that cast disappears. Cleaner graph, fewer failure points.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Still in <code>BP_ThirdPersonPlayerController</code> → right-click in empty Event Graph space → search <code>IA_Fire</code> → pick <strong>EnhancedInputAction IA_Fire</strong>. From its <strong>Triggered</strong> output execution pin, drag off → <strong>Print String</strong> → text = <code>"Fire!"</code>.</span></label>
+
+  <div class="tip"><strong>Why wire the Fire event on the controller too?</strong> Input action events fire on whichever Blueprint is listening — controller, character, even custom components. Since Fire is a player-intent action ("the player wants to shoot") rather than a pawn-behavior action ("this character animates a punch"), it belongs on the controller. The controller will decide which cannons fire and what ammo flies — the character doesn't need to know about cannons at all.</div>
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, press <strong>Play</strong> in the level. Confirm: WASD moves, mouse looks, Space jumps (all from the template, still working through your IMC), and <strong>Left Mouse Button</strong> prints "Fire!" in the top-left of the viewport. <span class="tag tag-checkpoint">CHECKPOINT — input is alive</span></span></label>
 
   <div class="gotcha"><strong>Movement broke after the swap?</strong> You probably saved <code>IMC_Cannons</code> before the duplicate finished pulling in the inherited mappings. Open <code>IMC_Cannons</code> and confirm IA_Move, IA_Look, IA_Jump, and IA_Fire are all listed. If Move and Look are missing, delete <code>IMC_Cannons</code> and redo the Duplicate from <code>IMC_Default</code>.</div>
 
-  <div class="gotcha"><strong>Fire prints nothing?</strong> Three things in order: (1) Is your default pawn actually <code>BP_ThirdPersonCharacter</code>? Open World Settings → GameMode Override → Default Pawn Class. (2) Did you Save <code>IMC_Cannons</code> after adding IA_Fire? Input assets need their own save. (3) Did the Add Mapping Context node actually run? Drop a Print String right after BeginPlay to verify.</div>
+  <div class="gotcha"><strong>Fire prints nothing?</strong> Three things in order: (1) Is your Player Controller actually <code>BP_ThirdPersonPlayerController</code>? Open World Settings → GameMode Override → confirm it points at <code>BP_ThirdPersonGameMode</code>, then open that → confirm <strong>Player Controller Class</strong> = <code>BP_ThirdPersonPlayerController</code>. (2) Did you Save <code>IMC_Cannons</code> after adding IA_Fire? Input assets need their own save. (3) Did the Add Mapping Context node actually run? Drop a Print String right after BeginPlay to verify.</div>
 
   <details class="shot" data-shot-id="shot-04">
   <summary>
@@ -652,6 +730,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">the Event Graph chain from BeginPlay through the EnhancedInputLocalPlayerSubsystem to Add Mapping Context, AND the IA_Fire event node connected to Print String.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -698,17 +777,17 @@ details.shot .shot-quota-warn {
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile and Save <code>BP_Cannon</code>.</span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Now hook the player's input to the cannons. Open <code>BP_ThirdPersonCharacter</code> → in the Event Graph, find your <code>IA_Fire</code> Triggered branch (currently goes to Print String). Replace the Print String with this:</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Now hook the player's input to the cannons. Open <code>BP_ThirdPersonPlayerController</code> → in the Event Graph, find your <code>IA_Fire</code> Triggered branch (currently goes to Print String). Replace the Print String with this:</span></label>
 
   <div class="bp-wiring">
-    <strong>BP_ThirdPersonCharacter — IA_Fire Triggered:</strong><br><br>
+    <strong>BP_ThirdPersonPlayerController — IA_Fire Triggered:</strong><br><br>
     <span class="node">IA_Fire (Triggered)</span> <span class="arrow">→</span> <span class="node">Get All Actors of Class</span><br>
     &nbsp;&nbsp;<span class="pin">Actor Class</span> = <span class="value">BP_Cannon</span><br>
     <span class="arrow">→</span> <span class="node">For Each Loop</span><br>
     &nbsp;&nbsp;<span class="arrow">→ (Loop Body)</span> <span class="node">Array Element → Fire</span> <span class="arrow">(call Fire on each cannon)</span>
   </div>
 
-  <div class="gotcha"><strong>Get All Actors of Class is expensive.</strong> It scans the entire world. Fine for one shot per second on a level with two cannons. <em>Don't</em> use it on Tick. In a real game you'd cache cannon references in an array on BeginPlay and iterate that — same For Each, no world scan. We're keeping the GAAOC version here because it makes the lesson visible; just remember the better pattern exists for when you do this for real.</div>
+  <div class="gotcha"><strong>Get All Actors of Class is expensive.</strong> It scans the entire world. Fine for one shot per second on a level with two cannons. <em>Don't</em> use it on Tick. In a real game you'd cache references at BeginPlay. We'll talk about that on Wednesday — for now, simplicity wins.</div>
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, press Play, click <strong>Left Mouse Button</strong>. <strong>A sphere should fly out of each cannon</strong> (well — appear in front of each cannon and just hang there. It has no movement yet. That's correct for Monday.) <span class="tag tag-checkpoint">CHECKPOINT — Monday goal achieved</span></span></label>
 
@@ -725,6 +804,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">in-game screenshot showing a sphere spawned in front of at least one cannon after pressing LMB.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -739,7 +819,7 @@ details.shot .shot-quota-warn {
   </div>
 </details>
 
-  <div class="build-note"><strong>Monday wrap-up:</strong> You authored two Blueprint classes, set up Enhanced Input from scratch (and learned to take ownership of the engine's defaults by replacing the IMC), and connected player input to a function call across actors. That's the entire Blueprint communication pattern in miniature. Wednesday we add motion, impact, animation, destruction, and polish.</div>
+  <div class="build-note"><strong>Monday wrap-up:</strong> You authored two Blueprint classes, set up Enhanced Input from scratch (and learned to take ownership of the engine's defaults by replacing the IMC), and connected player input to a function call across actors. That's the entire Blueprint communication pattern in miniature. Wednesday we add motion, impact, animation, destruction, and polish — and revisit Get All Actors of Class with a better pattern.</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -765,7 +845,7 @@ details.shot .shot-quota-warn {
   <label class="item"><input type="checkbox"><span class="item-text">Select the ProjectileMovement component → Details panel:<br>
   &nbsp;&nbsp;• <strong>Initial Speed</strong> = <code>3000</code><br>
   &nbsp;&nbsp;• <strong>Max Speed</strong> = <code>3000</code><br>
-  &nbsp;&nbsp;• <strong>Projectile Gravity Scale</strong> = <code>1.0</code> (arc) or <code>0.0</code> (laser-flat). Pick what feels right.<br>
+  &nbsp;&nbsp;• <strong>Project Gravity Scale</strong> = <code>1.0</code> (arc) or <code>0.0</code> (laser-flat). Pick what feels right.<br>
   &nbsp;&nbsp;• <strong>Should Bounce</strong> = off (we'll destroy on hit instead)</span></label>
 
   <label class="item"><input type="checkbox"><span class="item-text">Select the <code>Ball</code> static mesh component → Details → <strong>Collision Presets</strong> = <code>BlockAllDynamic</code>. <strong>Simulate Physics</strong> stays OFF (the ProjectileMovement component drives motion, not physics). Set <strong>Mass (kg)</strong> doesn't matter when not simulating physics.</span></label>
@@ -832,6 +912,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">in-game capture of a barrel mid-explosion or just-destroyed (the FX particles still visible).</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -893,6 +974,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">the Event Graph showing the Fire event → RecoilTimeline → Spawn flow, AND the Update pin → SetRelativeLocation chain. Bonus points for a clean alignment.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -986,6 +1068,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">the FS_CannonImpact Construction Script with the Add Field Command → Radial Falloff chain visible.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -1037,6 +1120,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">in-game capture mid-shatter, with chunks visibly separating along a radial pattern from the hit point.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -1065,7 +1149,7 @@ details.shot .shot-quota-warn {
 
   <label class="item"><input type="checkbox"><span class="item-text"><strong>Hit SFX:</strong> in <code>BP_Cannonball</code> On Component Hit, before Destroy Actor, add Play Sound at Location → an impact/wood-break sound → Location = <code>Hit Location</code>. <span class="tag tag-audio">AUDIO</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text"><strong>Camera shake:</strong> create new Blueprint Class → parent <strong>Matinee Camera Shake</strong> (search "camera shake" — it's the subclass with oscillation properties) → name <code>CS_CannonFire</code>. Open it → Class Defaults → set <strong>Oscillation Duration</strong> = <code>0.3</code>. Expand <strong>Loc Oscillation</strong> → set <code>X.Amplitude</code> = <code>2.0</code>, <code>Z.Amplitude</code> = <code>2.0</code> (with Frequency around <code>25</code>). Expand <strong>Rot Oscillation</strong> → set <code>Pitch.Amplitude</code> = <code>1.0</code>, <code>Yaw.Amplitude</code> = <code>1.0</code> (Frequency ~<code>25</code>).</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Camera shake:</strong> create new Blueprint Class → parent <strong>Legacy Camera Shake</strong> (search "camera shake" — pick the Blueprint variant) → name <code>CS_CannonFire</code>. Open it → Details panel → set Oscillation Duration = <code>0.3</code>, Location Amplitude = <code>2.0</code>, Rotation Amplitude = <code>1.0</code>.</span></label>
 
   <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_Cannon</code> Fire → after Spawn Actor → <strong>Get Player Controller</strong> (Player Index 0) → <strong>Client Start Camera Shake</strong> → Shake Class = <code>CS_CannonFire</code>, Scale = <code>1.0</code>. <span class="tag tag-anim">FEEL</span></span></label>
 
@@ -1086,6 +1170,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">in-game capture of a single cannon firing with muzzle flash visible, projectile in flight, and ideally a target reacting in the same frame. This is your money shot for the gameplay video thumbnail.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -1155,12 +1240,12 @@ details.shot .shot-quota-warn {
 
   <label class="item"><input type="checkbox"><span class="item-text">Open <code>IA_Fire</code> → in the <strong>Triggers</strong> array, click <strong>+</strong> → add <strong>Hold</strong> trigger → set Hold Time Threshold = <code>0.05</code> (so a quick click still registers as a held value of zero, just briefly). The action will now fire <strong>Started</strong>, <strong>Triggered</strong> (every frame while held), and <strong>Completed</strong> (on release). <span class="tag tag-input">INPUT</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_ThirdPersonCharacter</code>. Add a Float variable <code>ChargeAmount</code> (default 0.0) and a Float variable <code>MaxChargeTime</code> (default 1.5).</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_ThirdPersonPlayerController</code>. Add a Float variable <code>ChargeAmount</code> (default 0.0) and a Float variable <code>MaxChargeTime</code> (default 1.5).</span></label>
 
   <label class="item"><input type="checkbox"><span class="item-text">In the Event Graph, find your existing <code>IA_Fire</code> event node. The execution pin you used in Phase 6 was <strong>Triggered</strong>. Now wire the three pins differently:</span></label>
 
   <div class="bp-wiring">
-    <strong>BP_ThirdPersonCharacter — IA_Fire (charge mechanic):</strong><br><br>
+    <strong>BP_ThirdPersonPlayerController — IA_Fire (charge mechanic):</strong><br><br>
     <span class="node">IA_Fire (Started)</span> <span class="arrow">→</span> <span class="node">Set ChargeAmount</span> = <span class="value">0.0</span><br><br>
     <span class="node">IA_Fire (Triggered)</span> <span class="arrow">→</span> <span class="node">Set ChargeAmount</span><br>
     &nbsp;&nbsp;<span class="pin">Value</span> = <span class="node">Clamp (ChargeAmount + DeltaSeconds / MaxChargeTime, 0, 1)</span><br>
@@ -1188,7 +1273,7 @@ details.shot .shot-quota-warn {
 
   <div class="gotcha"><strong>BP_Cannonball's ProjectileMovement has Initial Speed = 3000.</strong> Setting Velocity overrides Initial Speed only if Set Velocity runs after BeginPlay (which Spawn Actor → Set Velocity guarantees). If your shots all fly at 3000 regardless of charge, you're hitting the wrong component or your Lerp is upstream of the Spawn.</div>
 
-  <label class="item"><input type="checkbox"><span class="item-text"><strong>Optional show-off:</strong> add a charge-up VFX. In <code>BP_ThirdPersonCharacter</code>'s IA_Fire (Triggered), spawn a Niagara system at the closest cannon's muzzle, scaled by ChargeAmount, and destroy it on Completed. Or change a material parameter on the cannon barrel that glows brighter as charge grows. <span class="tag tag-bonus">SHOW-OFF</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Optional show-off:</strong> add a charge-up VFX. In <code>BP_ThirdPersonPlayerController</code>'s IA_Fire (Triggered), spawn a Niagara system at the closest cannon's muzzle, scaled by ChargeAmount, and destroy it on Completed. Or change a material parameter on the cannon barrel that glows brighter as charge grows. <span class="tag tag-bonus">SHOW-OFF</span></span></label>
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play. Tap LMB → light shot. Hold LMB for ~1.5s, release → heavy shot that flies way faster. <span class="tag tag-checkpoint">CHECKPOINT — Bonus A</span></span></label>
 
@@ -1203,8 +1288,9 @@ details.shot .shot-quota-warn {
     </label>
   </summary>
   <div class="shot-body">
-    <p class="shot-desc">Event Graph of BP_ThirdPersonCharacter showing all three IA_Fire trigger pins (Started, Triggered, Completed) wired distinctly. Optional but appreciated.</p>
+    <p class="shot-desc">Event Graph of BP_ThirdPersonPlayerController showing all three IA_Fire trigger pins (Started, Triggered, Completed) wired distinctly. Optional but appreciated.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -1255,7 +1341,7 @@ details.shot .shot-quota-warn {
     &nbsp;&nbsp;<span class="pin">Minimum Damage</span> = <span class="value">10.0</span><br>
     &nbsp;&nbsp;<span class="pin">Damage Falloff</span> = <span class="value">1.0</span> <span class="arrow">(linear)</span><br>
     &nbsp;&nbsp;<span class="pin">Damage Type Class</span> = <span class="value">DamageType</span> <span class="arrow">(default is fine)</span><br>
-    &nbsp;&nbsp;<span class="pin">Damage Causer</span> = <span class="node">Self</span><br>
+    &nbsp;&nbsp;<span class="pin">Hurt Causer</span> = <span class="node">Self</span><br>
     <span class="arrow">→</span> <span class="node">Spawn Emitter at Location</span> <span class="arrow">(big explosion VFX)</span><br>
     <span class="arrow">→</span> <span class="node">Destroy Actor (Self)</span>
   </div>
@@ -1264,14 +1350,14 @@ details.shot .shot-quota-warn {
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save the child. Drag <code>BP_Cannonball_Explosive</code> into the level for a quick test (it'll just sit there with no projectile movement velocity since nothing fired it) → confirm the mesh override and that it can be placed. Delete the test instance.</span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Now wire ammo switching. Open <code>BP_ThirdPersonCharacter</code> → My Blueprint → + Variable → <code>CurrentAmmoClass</code>, type <strong>Class Reference</strong> → Class filter = <code>BP_Cannonball</code>. Default value = <code>BP_Cannonball</code>.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Now wire ammo switching. Open <code>BP_ThirdPersonPlayerController</code> → My Blueprint → + Variable → <code>CurrentAmmoClass</code>, type <strong>Class Reference</strong> → Class filter = <code>BP_Cannonball</code>. Default value = <code>BP_Cannonball</code>.</span></label>
 
   <label class="item"><input type="checkbox"><span class="item-text">In <code>_project/Inputs</code> → new Input Action → name <code>IA_SwitchAmmo</code>, Value Type = Digital. Open <code>IMC_Cannons</code> → add a mapping: <code>IA_SwitchAmmo</code> on <strong>Tab</strong>. Save both. <span class="tag tag-input">INPUT</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_ThirdPersonCharacter</code> → Event Graph → drop the <code>EnhancedInputAction IA_SwitchAmmo</code> event → on Triggered:</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_ThirdPersonPlayerController</code> → Event Graph → drop the <code>EnhancedInputAction IA_SwitchAmmo</code> event → on Triggered:</span></label>
 
   <div class="bp-wiring">
-    <strong>BP_ThirdPersonCharacter — IA_SwitchAmmo (toggle):</strong><br><br>
+    <strong>BP_ThirdPersonPlayerController — IA_SwitchAmmo (toggle):</strong><br><br>
     <span class="node">IA_SwitchAmmo (Triggered)</span> <span class="arrow">→</span> <span class="node">Branch</span> <span class="arrow">(Condition: CurrentAmmoClass == BP_Cannonball)</span><br>
     &nbsp;&nbsp;<span class="arrow">True →</span> <span class="node">Set CurrentAmmoClass</span> = <span class="value">BP_Cannonball_Explosive</span><br>
     &nbsp;&nbsp;<span class="arrow">False →</span> <span class="node">Set CurrentAmmoClass</span> = <span class="value">BP_Cannonball</span><br>
@@ -1280,7 +1366,7 @@ details.shot .shot-quota-warn {
 
   <label class="item"><input type="checkbox"><span class="item-text">Open <code>BP_Cannon</code> → on the <code>Fire</code> Custom Event → add another input: <code>AmmoClass</code>, type <strong>Class Reference</strong>, filter <code>BP_Cannonball</code>, default <code>BP_Cannonball</code>. In the Spawn Actor From Class node, change the <strong>Class</strong> pin from a hard-coded <code>BP_Cannonball</code> to the new <code>AmmoClass</code> input.</span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_ThirdPersonCharacter</code>'s IA_Fire dispatch (the For Each Loop calling Fire on each cannon) → wire <code>CurrentAmmoClass</code> into Fire's new <code>AmmoClass</code> input pin.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_ThirdPersonPlayerController</code>'s IA_Fire dispatch (the For Each Loop calling Fire on each cannon) → wire <code>CurrentAmmoClass</code> into Fire's new <code>AmmoClass</code> input pin.</span></label>
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play. LMB fires standard. Tab to switch. LMB now fires explosive shells that radial-damage every target in their blast radius. <span class="tag tag-checkpoint">CHECKPOINT — Bonus B</span></span></label>
 
@@ -1301,7 +1387,11 @@ details.shot .shot-quota-warn {
 
   <label class="item"><input type="checkbox"><span class="item-text">+ Function → <code>AddScore</code> → input <code>Points</code> Integer → body: <code>Score = Score + Points</code>. Compile, Save.</span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">World Settings → <strong>GameMode Override</strong> = <code>BP_CannonsGameMode</code>. (You're swapping out the template's BP_ThirdPersonGameMode — the Default Pawn Class will fall back to engine defaults, so set it explicitly.) Class Defaults of <code>BP_CannonsGameMode</code> → <strong>Default Pawn Class</strong> = <code>BP_ThirdPersonCharacter</code>.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">World Settings → <strong>GameMode Override</strong> = <code>BP_CannonsGameMode</code>. Now open <code>BP_CannonsGameMode</code> → Class Defaults panel → set both pawn-class slots:<br>
+  &nbsp;&nbsp;• <strong>Default Pawn Class</strong> = <code>BP_ThirdPersonCharacter</code><br>
+  &nbsp;&nbsp;• <strong>Player Controller Class</strong> = <code>BP_ThirdPersonPlayerController</code></span></label>
+
+  <div class="gotcha"><strong>Don't skip the Player Controller Class.</strong> A fresh GameModeBase child uses the engine's stock <code>PlayerController</code>, not the template's <code>BP_ThirdPersonPlayerController</code>. Skip this step and your Fire input goes dead — your IMC swap, your IA_Fire wiring, your charge mechanic, your ammo toggle, all of it lives in the controller and none of it runs. This is the #1 source of "everything was working, why did Bonus C break it?"</div>
 
   <div class="gotcha"><strong>Forgot to set Default Pawn Class?</strong> You'll spawn into the level as a floating camera. Open BP_CannonsGameMode → Class Defaults panel → look for the four pawn-class slots (Pawn, Player Controller, HUD, Game State).</div>
 
@@ -1324,7 +1414,9 @@ details.shot .shot-quota-warn {
 
   <div class="gotcha"><strong>Bindings tick every frame.</strong> Cheap for a single Cast and an int read. For anything more expensive (Get All Actors of Class, line traces), don't use a binding — use Event Dispatchers from the Game Mode to push updates only when score changes. We're keeping it simple here.</div>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save <code>WBP_HUD</code>. Open <code>BP_ThirdPersonCharacter</code> → Event BeginPlay → at the end of the existing chain, add: <strong>Create Widget</strong> (Class = WBP_HUD, Owning Player = self's controller) → <strong>Add to Viewport</strong>.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save <code>WBP_HUD</code>. Open <code>BP_ThirdPersonPlayerController</code> → Event BeginPlay → at the end of the existing chain (after Add Mapping Context), add: <strong>Create Widget</strong> (Class = WBP_HUD, Owning Player = <code>Self</code>) → <strong>Add to Viewport</strong>.</span></label>
+
+  <div class="tip"><strong>Why on the controller, not the character?</strong> HUDs belong to the player, not the pawn — for the same reason input does. If your character dies and respawns, you don't want the HUD to flicker out and rebuild itself. Controller-owned HUDs persist across pawn lifecycles. Bonus: the Owning Player pin needs a PlayerController, and from inside the controller you just plug in <code>Self</code> instead of casting through the controller hierarchy.</div>
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play. Score "0" appears top-left. Destroy a target → ticks to 10. Destroy another → 20. <span class="tag tag-checkpoint">CHECKPOINT — Bonus C</span></span></label>
 
@@ -1341,6 +1433,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">in-game capture of the HUD displaying score after at least one target kill, AND the WBP_HUD designer view showing the bound ScoreText widget.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -1400,6 +1493,7 @@ details.shot .shot-quota-warn {
   <div class="shot-body">
     <p class="shot-desc">in-game capture of the Chaos shatter mid-slo-mo, with chunks visibly suspended in the air. This is your <em>actual</em> money shot if you complete this bonus — use it as the gameplay video thumbnail.</p>
     <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
       <button type="button" class="shot-add-btn">+ Add screenshot</button>
       <input type="file" accept="image/*" class="shot-file-input" hidden>
     </div>
@@ -1478,7 +1572,7 @@ details.shot .shot-quota-warn {
 
 <div class="doc-footer">
   GAME 266 Core Principles: Game Tech &nbsp;·&nbsp; Professor Lindsey &nbsp;·&nbsp; SCAD Atlanta<br>
-  Build Guide v1.2 &nbsp;·&nbsp; Unreal Engine 5.6.1 &nbsp;·&nbsp; <em>Our Business is Fun.</em>
+  Build Guide v1.4 &nbsp;·&nbsp; Unreal Engine 5.6.1 &nbsp;·&nbsp; <em>Our Business is Fun.</em>
 </div>
 
 <script>
