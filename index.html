@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GAME 266 — Fire the Cannons! Build Guide v1.4</title>
+<title>GAME 266 — Fire the Cannons! Build Guide v1.5</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -414,13 +414,13 @@ details.shot .shot-quota-warn {
 <body>
 
 <div class="doc-header">
-  <h1>GAME 266 — Fire the Cannons! Build Guide v1.4</h1>
+  <h1>GAME 266 — Fire the Cannons! Build Guide v1.5</h1>
   <div class="subtitle">Your first Blueprint project · Unreal Engine 5.6.1</div>
   <div class="meta">
     <strong>Monday:</strong> Phases 1–6 — foundation + first shot &nbsp;·&nbsp;
-    <strong>Wednesday:</strong> Phases 7–11 — impact, animation, Chaos, polish<br>
-    <strong>Bonus phases B1–B4:</strong> optional advanced work — charge shots, ammo inheritance, score HUD, slo-mo break<br>
-    <strong>Friday 8 AM:</strong> target submission &nbsp;·&nbsp;
+    <strong>Wednesday:</strong> Phases 7–10 — impact, animation, polish, submission<br>
+    <strong>Bonus phases B1–B5:</strong> optional advanced work — charge shots, ammo inheritance, score HUD, slow-mo, and Chaos destruction<br>
+    <strong>Friday 12 PM (noon):</strong> target submission &nbsp;·&nbsp;
     <strong>Saturday night:</strong> two-day extension cutoff<br>
     The <strong>📸</strong> cues describe what to capture for your final BP screenshots packet that goes to Blackboard. The collapsible reference images inside each cue are instructor reference shots being added over time — you don't need to upload anything to this page.
   </div>
@@ -428,8 +428,9 @@ details.shot .shot-quota-warn {
 </div>
 
 <details class="changelog">
-  <summary>📋 Revision history (v1.4 current)</summary>
+  <summary>📋 Revision history (v1.5 current)</summary>
   <ul>
+    <li><strong>v1.5</strong> — Chaos Destruction removed from required path and relocated to <strong>Bonus E</strong> with new framing about Chaos's status as Epic's most-promised, never-completed game feature. Existing Bonus D (slow-mo on break) folded into Bonus E as an optional cherry on top. Wednesday session reduced from Phases 7–11 to Phases 7–10 (impact, animation, polish, submission) with Phase 12 (submission) renumbered to Phase 11. Submission deadline moved from Friday 8 AM to <strong>Friday 12 PM (noon)</strong>. Required screenshots reduced from 10 to 8. Submission checklist drops Chaos requirement; naming-convention list drops <code>GC_</code> from the required set (still listed in Bonus E).</li>
     <li><strong>v1.4</strong> — Clarified that the inline reference images in the screenshot blocks are instructor notes being added over time, <em>not</em> student-required interaction. Empty blocks now display a "reference image to be added" placeholder. Students still capture their own 10 BP screenshots for the submission packet as before.</li>
     <li><strong>v1.3</strong> — IMC setup and all player-input wiring (IA_Fire test print, Fire dispatch, Bonus A charge mechanic, Bonus B ammo toggle, Bonus C HUD creation) moved from <code>BP_ThirdPersonCharacter</code> to <code>BP_ThirdPersonPlayerController</code> to match UE 5.6 template architecture. New Phase 2 concept box explains the controller-vs-character split. Bonus C gains an explicit Player Controller Class step + gotcha.</li>
     <li><strong>v1.2</strong> — Screenshot cues converted to collapsible details blocks with per-shot "done" toggle and inline image-paste (auto-resized, persisted in localStorage). Reset button now also clears stored screenshots.</li>
@@ -495,7 +496,6 @@ details.shot .shot-quota-warn {
       <tr><td><code>S_</code></td><td>Sound Wave / Cue</td><td><code>S_CannonFire</code></td></tr>
       <tr><td><code>T_</code></td><td>Texture</td><td><code>T_StoneAlbedo</code></td></tr>
       <tr><td><code>MAP_</code></td><td>Level / Map</td><td><code>MAP_CannonRange</code></td></tr>
-      <tr><td><code>GC_</code></td><td>Geometry Collection (Chaos)</td><td><code>GC_StoneWall</code></td></tr>
     </tbody>
   </table>
 
@@ -824,7 +824,7 @@ details.shot .shot-quota-warn {
 
 <!-- ═══════════════════════════════════════════════ -->
 <div class="section-divider">
-  <span>Wednesday — Session 2: Impact, Animation, Destruction, Polish</span>
+  <span>Wednesday — Session 2: Impact, Animation, Polish, Submission</span>
   <span class="section-line"></span>
   <span class="section-btn-group">
     <button class="section-resume-btn" title="Check all steps above this section">Resume here</button>
@@ -992,153 +992,7 @@ details.shot .shot-quota-warn {
 
 <div class="phase">
   <div class="phase-header">
-    <span class="phase-num" style="background:#FFF8E1;color:#E65100;">Phase 10</span>
-    <span class="phase-title">Chaos Destruction — what it is, what it isn't</span>
-  </div>
-  <div class="phase-note">The headline feature. Used carefully it's the most satisfying thing in this whole project. Used carelessly it's a 30 FPS performance disaster. Read the concept box first.</div>
-
-  <div class="concept-box">
-    <h3>Chaos Destruction — the honest read</h3>
-    <p><strong>What Chaos is designed for:</strong> art-driven, set-piece destruction. A glass window shattering when you walk through. A pillar collapsing in a cinematic. A wooden crate exploding when shot. Hero-moment, on-camera, "look at this cool break" — that's its lane and it's superb at it.</p>
-    <p><strong>What Chaos is NOT:</strong> a true real-time destruction engine. It is not Red Faction Guerrilla's GeoMod. It will not give you a fully-destructible city block where every building piece persists, collides with AI, and survives a multiplayer rollback. Pieces fall asleep, can't be saved across levels easily, are hard to network deterministically, and consume serious CPU when many sim at once.</p>
-    <p><strong>Mental model:</strong> Chaos is a <em>visual effect that happens to use physics</em>, not a physics simulation that happens to look pretty. Treat broken pieces as cosmetic debris — destroy them after a few seconds, don't build gameplay on them.</p>
-  </div>
-
-  <label class="item"><input type="checkbox"><span class="item-text">Window menu → <strong>Fracture</strong> → opens the Fracture Editor panel.</span></label>
-
-  <label class="item"><input type="checkbox"><span class="item-text">In the level, select one of your stone wall pieces. In the Fracture panel → click <strong>New</strong> → save as <code>GC_StoneWall</code> in <code>_project/Destruction</code>. The wall is now a Geometry Collection actor. <span class="tag tag-class">CHAOS</span></span></label>
-
-  <label class="item"><input type="checkbox"><span class="item-text">In the Fracture panel: select the Geometry Collection → choose <strong>Uniform</strong> fracture mode → Voronoi Sites = <code>20</code> → click <strong>Fracture</strong>. The wall is now broken into 20 chunks (visible in the Outliner Hierarchy view).</span></label>
-
-  <label class="item"><input type="checkbox"><span class="item-text">Still in the Fracture panel → with the GC selected → click <strong>Cluster</strong> → set Cluster level = 1 → this groups the chunks so they don't all break independently — they cluster, then break into their constituent pieces only when enough strain is applied to that cluster. <span class="tag tag-class">CHAOS</span></span></label>
-
-  <label class="item"><input type="checkbox"><span class="item-text">Select the Geometry Collection in the level → Details panel → <strong>Physics</strong> section:<br>
-  &nbsp;&nbsp;• <strong>Object Type</strong> = <code>Destructible</code><br>
-  &nbsp;&nbsp;• <strong>Simulating</strong> = checked<br>
-  &nbsp;&nbsp;• <strong>Damage Threshold</strong> array — set Index 0 = <code>500</code> (cluster level), Index 1 = <code>50</code> (leaf chunks). Higher cluster threshold = wall holds together until a strong hit; lower leaf threshold = once the cluster breaks, individual chunks come apart easily.</span></label>
-
-  <div class="concept-box">
-    <h3>Field Systems — the <em>real</em> Chaos workflow</h3>
-    <p>Chaos breaks happen because something applies <strong>strain</strong> to chunks. A cannonball collision can apply strain directly via impulse, but the workflow Epic intends — and what production projects use — is a <strong>Field System</strong>.</p>
-    <p>A Field System is a Blueprint-style graph that <em>describes a function over space</em>: "at this position, deliver this much strain (or force, or velocity, or angular impulse) to anything listening." When a Field System Actor is in the level, the Chaos solver evaluates that function every tick and applies the result to nearby Geometry Collections.</p>
-    <p>Why this matters: Field Systems give you spatial control (radial falloff, planes, boxes), per-chunk targeting (only chunks at this depth, only chunks of this size), and composability (combine multiple fields with operators). It's how Epic does cinematic destruction in their demos. Direct impulse works for one-shot prototypes; Field Systems are how you build a real destruction system.</p>
-  </div>
-
-  <label class="item"><input type="checkbox"><span class="item-text">In <code>Content/_project/Destruction</code> → right-click → <strong>FX → Field System</strong> → name it <code>FS_CannonImpact</code>. Open it. <span class="tag tag-vfx">FIELD</span></span></label>
-
-  <label class="item"><input type="checkbox"><span class="item-text">In the Field System editor's Construction Script (the editor opens to it by default), build this graph:</span></label>
-
-  <div class="bp-wiring">
-    <strong>FS_CannonImpact — Construction Script:</strong><br><br>
-    <span class="node">Construction Script</span> <span class="arrow">→</span> <span class="node">Add Field Command</span><br>
-    &nbsp;&nbsp;<span class="pin">Target</span> = <span class="value">External Cluster Strain</span><br>
-    &nbsp;&nbsp;<span class="pin">Field</span> <span class="arrow">←</span> <span class="node">Radial Falloff</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Magnitude</span> = <span class="value">1500.0</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Min Range</span> = <span class="value">0.0</span>, <span class="pin">Max Range</span> = <span class="value">1.0</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Default</span> = <span class="value">0.0</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Radius</span> = <span class="value">300.0</span> <span class="arrow">(impact area in cm)</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Position</span> = <span class="node">GetActorLocation (self)</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Falloff</span> = <span class="value">Linear</span>
-  </div>
-
-  <div class="tip"><strong>Reading this field in plain English:</strong> "At my actor's location, deliver up to 1500 units of External Cluster Strain to any chunks within 300 cm, falling off linearly to zero at the edge." That's enough to break a cluster (threshold 500) but the falloff means only chunks near the impact actually fly.</div>
-
-  <label class="item"><input type="checkbox"><span class="item-text">Save and close <code>FS_CannonImpact</code>.</span></label>
-
-  <label class="item"><input type="checkbox"><span class="item-text">Now create the carrier actor. <code>_project/Blueprints</code> → new Blueprint Class → parent <strong>Actor</strong> → name <code>BP_ImpactField</code>. <span class="tag tag-class">CLASS</span></span></label>
-
-  <label class="item"><input type="checkbox"><span class="item-text">Components → + Add → <strong>Field System Component</strong> → make it root → Details panel → <strong>Field System</strong> property = <code>FS_CannonImpact</code>.</span></label>
-
-  <label class="item"><input type="checkbox"><span class="item-text">In the Event Graph: <code>Event BeginPlay</code> → <strong>Set Life Span</strong> (target Self, In Lifespan = <code>0.1</code>). The actor exists for one tenth of a second — long enough for the field to deliver one strain pulse — then auto-destroys. <span class="tag tag-checkpoint">CHECKPOINT</span></span></label>
-
-  <div class="gotcha"><strong>Why Set Life Span and not Destroy Actor immediately?</strong> The Field System Component needs at least one tick to send its commands to the Chaos solver. Destroying on BeginPlay can race the solver and produce no break. 0.1 seconds is generous and still invisible to the player.</div>
-
-  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save <code>BP_ImpactField</code>. Drag one into the level for a manual test — if you placed it overlapping a fractured wall, the wall should break the moment you press Play. Delete the test instance after.</span></label>
-
-  <details class="shot" data-shot-id="shot-08">
-  <summary>
-    <span class="shot-toggle-icon">▶</span>
-    <span class="shot-icon">📸</span>
-    <span class="shot-label">SCREENSHOT 08 — Field System graph</span>
-    <label class="shot-done" onclick="event.stopPropagation()">
-      <input type="checkbox" class="shot-done-cb">
-      <span>done</span>
-    </label>
-  </summary>
-  <div class="shot-body">
-    <p class="shot-desc">the FS_CannonImpact Construction Script with the Add Field Command → Radial Falloff chain visible.</p>
-    <div class="shot-image-area">
-      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
-      <button type="button" class="shot-add-btn">+ Add screenshot</button>
-      <input type="file" accept="image/*" class="shot-file-input" hidden>
-    </div>
-    <div class="shot-image-wrap" hidden>
-      <img class="shot-img" alt="">
-      <div class="shot-image-buttons">
-        <button type="button" class="shot-replace-btn">Replace</button>
-        <button type="button" class="shot-remove-btn">Remove</button>
-      </div>
-    </div>
-    <div class="shot-quota-warn" hidden></div>
-  </div>
-</details>
-
-  <label class="item"><input type="checkbox"><span class="item-text">Now wire the cannonball to spawn an impact field on every hit. Open <code>BP_Cannonball</code> → <code>On Component Hit</code>. Insert a new branch <em>before</em> the existing Apply Damage:</span></label>
-
-  <div class="bp-wiring">
-    <strong>BP_Cannonball — On Component Hit (full updated chain):</strong><br><br>
-    <span class="node">On Component Hit (Ball)</span> <span class="arrow">→</span> <span class="node">Spawn Actor From Class</span><br>
-    &nbsp;&nbsp;<span class="pin">Class</span> = <span class="value">BP_ImpactField</span><br>
-    &nbsp;&nbsp;<span class="pin">Spawn Transform</span> <span class="arrow">←</span> <span class="node">Make Transform</span><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Location</span> = <span class="value">Hit Location (from hit event)</span><br>
-    &nbsp;&nbsp;<span class="pin">Collision Handling Override</span> = <span class="value">Always Spawn, Ignore Collisions</span><br>
-    <span class="arrow">→</span> <span class="node">Apply Damage</span> <span class="arrow">(existing — for BP_Target)</span><br>
-    &nbsp;&nbsp;<span class="pin">Damaged Actor</span> = <span class="value">Other Actor</span><br>
-    &nbsp;&nbsp;<span class="pin">Base Damage</span> = <span class="value">25.0</span><br>
-    &nbsp;&nbsp;<span class="pin">Damage Causer</span> = <span class="value">Self</span><br>
-    <span class="arrow">→</span> <span class="node">Destroy Actor (Self)</span>
-  </div>
-
-  <div class="tip"><strong>Why spawn the field on <em>every</em> hit, not just GC hits?</strong> Geometry Collections are the only actors that listen to External Cluster Strain. Walls, targets, and everything else simply ignore the field — no cast required, no branch, no overhead. The field broadcasts; only listeners react. This is one of the most elegant patterns in Chaos.</div>
-
-  <div class="gotcha"><strong>Performance discipline (non-negotiable):</strong> Each BP_ImpactField spawn = one field command in the Chaos solver. At our cannon firing rate this is fine. If you ever loop fire (Bonus B's explosive shells, for instance), watch the frame time — each shell spawns its own field. Limit total simulating chunks across the level to ~150 max. Use the GC's <strong>Sleep Threshold</strong> (Details → Physics) so resting chunks don't keep ticking. Add a <strong>Lifespan</strong> override to broken pieces (in the GC's Sim → Cluster Group settings) to despawn them after 5 seconds.</div>
-
-  <div class="tip"><strong>Going further:</strong> The Field System editor supports composition — Add Field Command nodes can chain, and operator nodes (Sum, Cull, Conversion) let you combine fields. Try adding a second Add Field Command targeting <strong>Linear Velocity</strong> with a smaller Radial Falloff to add an outward push to broken chunks, on top of the strain that breaks them. Epic's <strong>Content Examples</strong> sample project has a "Chaos" map with eight or so pre-built Field System examples worth dissecting after you submit.</div>
-
-  <label class="item"><input type="checkbox"><span class="item-text">Play, LMB, hit the fractured wall. Chunks should fly outward from the impact point with realistic falloff (chunks closest to the hit fly hardest, chunks at the edge of the radius barely move). <span class="tag tag-checkpoint">CHECKPOINT — Chaos via Field</span></span></label>
-
-  <details class="shot" data-shot-id="shot-09">
-  <summary>
-    <span class="shot-toggle-icon">▶</span>
-    <span class="shot-icon">📸</span>
-    <span class="shot-label">SCREENSHOT 09 — Chaos break via Field</span>
-    <label class="shot-done" onclick="event.stopPropagation()">
-      <input type="checkbox" class="shot-done-cb">
-      <span>done</span>
-    </label>
-  </summary>
-  <div class="shot-body">
-    <p class="shot-desc">in-game capture mid-shatter, with chunks visibly separating along a radial pattern from the hit point.</p>
-    <div class="shot-image-area">
-      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
-      <button type="button" class="shot-add-btn">+ Add screenshot</button>
-      <input type="file" accept="image/*" class="shot-file-input" hidden>
-    </div>
-    <div class="shot-image-wrap" hidden>
-      <img class="shot-img" alt="">
-      <div class="shot-image-buttons">
-        <button type="button" class="shot-replace-btn">Replace</button>
-        <button type="button" class="shot-remove-btn">Remove</button>
-      </div>
-    </div>
-    <div class="shot-quota-warn" hidden></div>
-  </div>
-</details>
-</div>
-
-<div class="phase">
-  <div class="phase-header">
-    <span class="phase-num" style="background:#F3E5F5;color:#4A148C;">Phase 11</span>
+    <span class="phase-num" style="background:#F3E5F5;color:#4A148C;">Phase 10</span>
     <span class="phase-title">Polish — VFX, audio, camera shake</span>
   </div>
   <div class="phase-note">10% of the rubric is "bonus features and animation polish." This phase is the difference between an 80 and a 95.</div>
@@ -1161,7 +1015,7 @@ details.shot .shot-quota-warn {
   <summary>
     <span class="shot-toggle-icon">▶</span>
     <span class="shot-icon">📸</span>
-    <span class="shot-label">SCREENSHOT 10 — full game feel</span>
+    <span class="shot-label">SCREENSHOT 08 — full game feel</span>
     <label class="shot-done" onclick="event.stopPropagation()">
       <input type="checkbox" class="shot-done-cb">
       <span>done</span>
@@ -1188,7 +1042,7 @@ details.shot .shot-quota-warn {
 
 <div class="phase">
   <div class="phase-header">
-    <span class="phase-num" style="background:#E0F2F1;color:#00695C;">Phase 12</span>
+    <span class="phase-num" style="background:#E0F2F1;color:#00695C;">Phase 11</span>
     <span class="phase-title">Package, capture, submit</span>
   </div>
   <div class="phase-note">Three deliverables go to two different places. Read carefully — this section is where students lose easy points.</div>
@@ -1203,9 +1057,9 @@ details.shot .shot-quota-warn {
 
   <label class="item"><input type="checkbox"><span class="item-text"><strong>Rename the output folder</strong> to <code>LastName_FirstInitial_GAME266_Cannons</code> (e.g., <code>Smith_J_GAME266_Cannons</code>). Zip the entire folder. <span class="tag tag-checkpoint">DELIVERABLE 1 / 3</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text"><strong>Capture gameplay video</strong> (~30–60 seconds): use OBS, ShareX, or Windows Game Bar (Win+G). Show: starting the level, firing both cannons, hitting targets, breaking the Chaos wall via the Field System, recoil and VFX visible. <strong>If you completed any bonuses, demo them in the video</strong> — charge shots, Tab-switching to explosive ammo, score ticking, slow-mo break. Save as <code>LastName_FirstInitial_GAME266_Cannons.mp4</code>. <span class="tag tag-checkpoint">DELIVERABLE 2 / 3</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Capture gameplay video</strong> (~30–60 seconds): use OBS, ShareX, or Windows Game Bar (Win+G). Show: starting the level, firing both cannons, hitting and destroying targets, recoil and VFX visible. <strong>If you completed any bonuses, demo them in the video</strong> — charge shots, Tab-switching to explosive ammo, score ticking, slow-mo break, Chaos wall destruction. Save as <code>LastName_FirstInitial_GAME266_Cannons.mp4</code>. <span class="tag tag-checkpoint">DELIVERABLE 2 / 3</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text"><strong>Compile your Blueprint screenshots packet</strong> — the ten screenshots flagged 📸 throughout the required phases (bonus screenshots are optional but appreciated). Take them in the editor (<strong>not</strong> in the packaged build). For each: zoom out enough that all wires are readable, leave the comment boxes you placed visible, use Windows Snipping Tool or PrtScn. Drop them in a folder named <code>LastName_FirstInitial_GAME266_BPScreenshots</code>. <span class="tag tag-checkpoint">DELIVERABLE 3 / 3</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text"><strong>Compile your Blueprint screenshots packet</strong> — the eight screenshots flagged 📸 throughout the required phases, numbered 01 through 08 (bonus screenshots are optional but appreciated). Take them in the editor (<strong>not</strong> in the packaged build). For each: zoom out enough that all wires are readable, leave the comment boxes you placed visible, use Windows Snipping Tool or PrtScn. Drop them in a folder named <code>LastName_FirstInitial_GAME266_BPScreenshots</code>. <span class="tag tag-checkpoint">DELIVERABLE 3 / 3</span></span></label>
 
   <div class="tip"><strong>Comment boxes earn rubric points.</strong> In any Event Graph, select a group of nodes → press <strong>C</strong> → type a label → set the comment color via the comment's Details panel. They show your <em>intent</em> to a grader who has to read your wiring. Use them on every Fire event, every On Hit, every BeginPlay flow.</div>
 
@@ -1225,8 +1079,8 @@ details.shot .shot-quota-warn {
 
 <div class="bonus-banner">
   <h3>Read this before starting any bonus phase</h3>
-  <p>The grade rubric is satisfied by Phases 1–11. <strong>Bonuses are not required and are not graded as a separate criterion</strong> — they push your work into the "exceeds" zone of each rubric criterion (cleaner Cannon Functionality for Bonus A, deeper Animation/Bonus Features for Bonus C and D, more polished Level Design for the HUD in Bonus C).</p>
-  <p>Each bonus is independent. You can do A without B, C without A, etc. Pick what excites you. If you only have time for one, <strong>Bonus B (inheritance + explosive ammo)</strong> teaches the most transferable Blueprint pattern.</p>
+  <p>The grade rubric is satisfied by Phases 1–11. <strong>Bonuses are not required and are not graded as a separate criterion</strong> — they push your work into the "exceeds" zone of each rubric criterion (cleaner Cannon Functionality for Bonus A, deeper Animation/Bonus Features for Bonus C and Bonus E, more polished Level Design for the HUD in Bonus C).</p>
+  <p>Each bonus is independent. You can do A without B, C without A, etc. Pick what excites you. If you only have time for one, <strong>Bonus B (inheritance + explosive ammo)</strong> teaches the most transferable Blueprint pattern. <strong>Bonus E (Chaos Destruction)</strong> is the showiest but read its concept boxes first — Chaos has a complicated reputation and you should know what you're signing up for.</p>
   <p>Save before you start each bonus. If something breaks the base build, revert.</p>
 </div>
 
@@ -1331,9 +1185,7 @@ details.shot .shot-quota-warn {
 
   <div class="bp-wiring">
     <strong>BP_Cannonball_Explosive — On Component Hit (override):</strong><br><br>
-    <span class="node">On Component Hit (Ball)</span> <span class="arrow">→</span> <span class="node">Spawn Actor From Class (BP_ImpactField)</span><br>
-    &nbsp;&nbsp;<span class="pin">Location</span> = <span class="value">Hit Location</span><br>
-    <span class="arrow">→</span> <span class="node">Apply Radial Damage With Falloff</span><br>
+    <span class="node">On Component Hit (Ball)</span> <span class="arrow">→</span> <span class="node">Apply Radial Damage With Falloff</span><br>
     &nbsp;&nbsp;<span class="pin">Origin</span> = <span class="value">Hit Location</span><br>
     &nbsp;&nbsp;<span class="pin">Damage Inner Radius</span> = <span class="value">200.0</span> <span class="arrow">(full damage zone)</span><br>
     &nbsp;&nbsp;<span class="pin">Damage Outer Radius</span> = <span class="value">600.0</span> <span class="arrow">(falloff zone)</span><br>
@@ -1346,7 +1198,7 @@ details.shot .shot-quota-warn {
     <span class="arrow">→</span> <span class="node">Destroy Actor (Self)</span>
   </div>
 
-  <div class="tip"><strong>Apply Radial Damage With Falloff</strong> automatically calls Event Any Damage on every actor inside the outer radius. Your existing <code>BP_Target</code> already listens for that — so explosive shells will damage every target in the blast radius without any further wiring. That's the elegance of working through Apply Damage.</div>
+  <div class="tip"><strong>Apply Radial Damage With Falloff</strong> automatically calls Event Any Damage on every actor inside the outer radius. Your existing <code>BP_Target</code> already listens for that — so explosive shells will damage every target in the blast radius without any further wiring. That's the elegance of working through Apply Damage. <em>If you also did Bonus E (Chaos), you'll want to insert a BP_ImpactField spawn at Hit Location <strong>before</strong> the Apply Radial Damage so the shell breaks fractured walls too.</em></div>
 
   <label class="item"><input type="checkbox"><span class="item-text">Compile, Save the child. Drag <code>BP_Cannonball_Explosive</code> into the level for a quick test (it'll just sit there with no projectile movement velocity since nothing fired it) → confirm the mesh override and that it can be placed. Delete the test instance.</span></label>
 
@@ -1453,13 +1305,162 @@ details.shot .shot-quota-warn {
 
 <div class="phase">
   <div class="phase-header">
-    <span class="phase-num" style="background:#FFE0B2;color:#BF360C;">Bonus D</span>
-    <span class="phase-title">Slow-mo cinematic on Chaos break</span>
+    <span class="phase-num" style="background:#FFE0B2;color:#BF360C;">Bonus E</span>
+    <span class="phase-title">Chaos Destruction — and an honest read on Epic's most-promised feature</span>
     <span class="tag tag-advanced" style="margin-left:auto;">ADVANCED</span>
   </div>
-  <div class="phase-note">When a Geometry Collection breaks, time briefly dilates so the player can savor the shatter. Teaches Set Global Time Dilation, latent Delay nodes, and why "feel" usually comes from time, not visuals.</div>
+  <div class="phase-note">Fracture a wall, break it on impact via a Field System, optionally add a slow-mo cinematic. Treat this as a learning lab, not a production tool — read the concept box first.</div>
 
-  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_Cannonball</code>'s OnComponentHit, after the existing chain, add a check: was the thing we hit a Geometry Collection? Insert this AFTER the BP_ImpactField spawn but BEFORE Destroy Actor:</span></label>
+  <div class="concept-box">
+    <h3>Why Chaos lives in Bonus, not Required</h3>
+    <p><strong>Chaos has never been a completed, production-ready feature for games.</strong> Epic introduced it in 2019 as the Apex/PhysX successor, promised "real-time destruction at scale" in the Chaos demos, and has been quietly walking back that ambition ever since. Multiple AAA titles have shipped <em>without</em> using it for gameplay destruction, instead falling back to baked Niagara/VFX simulations, pre-fractured "destruction proxies," or Houdini-baked vertex animations.</p>
+    <p>The toolset works, the editor renders breaks beautifully, and Epic still pitches it in marketing. But the gap between "I can fracture a wall in the editor" and "I can ship a multiplayer game where players destroy buildings" is enormous, and Chaos has not closed it. Networking, save/load, persistence, AI navigation around debris, predictable performance under load — every one of these is still an open problem or a "you'll have to write your own system on top" answer.</p>
+    <p><strong>So why teach it at all?</strong> Three reasons. First, you'll see it on every UE job listing, and you should know what it is and isn't before you walk into the interview. Second, the Field Systems pattern (declarative spatial functions over a physics solver) is genuinely interesting and shows up in other places. Third, for set-piece moments — a glass shatter, a single hero break in a cinematic, a one-off "destroy this object" gameplay trigger — Chaos is fine. Just don't build a game on it.</p>
+  </div>
+
+  <div class="concept-box">
+    <h3>What Chaos is for, and what it is not</h3>
+    <p><strong>What Chaos is designed for:</strong> art-driven, set-piece destruction. A glass window shattering when you walk through. A pillar collapsing in a cinematic. A wooden crate exploding when shot. Hero-moment, on-camera, "look at this cool break" — that's its lane and it's superb at it.</p>
+    <p><strong>What Chaos is NOT:</strong> a true real-time destruction engine. It is not Red Faction Guerrilla's GeoMod. It will not give you a fully-destructible city block where every building piece persists, collides with AI, and survives a multiplayer rollback. Pieces fall asleep, can't be saved across levels easily, are hard to network deterministically, and consume serious CPU when many sim at once.</p>
+    <p><strong>Mental model:</strong> Chaos is a <em>visual effect that happens to use physics</em>, not a physics simulation that happens to look pretty. Treat broken pieces as cosmetic debris — destroy them after a few seconds, don't build gameplay on them.</p>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Add the Chaos naming-convention prefix you skipped earlier: <code>GC_</code> for Geometry Collections (e.g. <code>GC_StoneWall</code>). Make a folder if you don't already have one: <code>Content/_project/Destruction</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Window menu → <strong>Fracture</strong> → opens the Fracture Editor panel.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the level, select one of your stone wall pieces. In the Fracture panel → click <strong>New</strong> → save as <code>GC_StoneWall</code> in <code>_project/Destruction</code>. The wall is now a Geometry Collection actor. <span class="tag tag-class">CHAOS</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the Fracture panel: select the Geometry Collection → choose <strong>Uniform</strong> fracture mode → Voronoi Sites = <code>20</code> → click <strong>Fracture</strong>. The wall is now broken into 20 chunks (visible in the Outliner Hierarchy view).</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Still in the Fracture panel → with the GC selected → click <strong>Cluster</strong> → set Cluster level = 1 → this groups the chunks so they don't all break independently. They cluster, then break into their constituent pieces only when enough strain is applied to that cluster. <span class="tag tag-class">CHAOS</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Select the Geometry Collection in the level → Details panel → <strong>Physics</strong> section:<br>
+  &nbsp;&nbsp;• <strong>Object Type</strong> = <code>Destructible</code><br>
+  &nbsp;&nbsp;• <strong>Simulating</strong> = checked<br>
+  &nbsp;&nbsp;• <strong>Damage Threshold</strong> array — set Index 0 = <code>500</code> (cluster level), Index 1 = <code>50</code> (leaf chunks). Higher cluster threshold = wall holds together until a strong hit; lower leaf threshold = once the cluster breaks, individual chunks come apart easily.</span></label>
+
+  <div class="concept-box">
+    <h3>Field Systems — the "real" Chaos workflow</h3>
+    <p>Chaos breaks happen because something applies <strong>strain</strong> to chunks. A cannonball collision can apply strain directly via impulse, but the workflow Epic intends — and what production projects use — is a <strong>Field System</strong>.</p>
+    <p>A Field System is a Blueprint-style graph that <em>describes a function over space</em>: "at this position, deliver this much strain (or force, or velocity, or angular impulse) to anything listening." When a Field System Actor is in the level, the Chaos solver evaluates that function every tick and applies the result to nearby Geometry Collections.</p>
+    <p>Why this matters: Field Systems give you spatial control (radial falloff, planes, boxes), per-chunk targeting (only chunks at this depth, only chunks of this size), and composability (combine multiple fields with operators). It's how Epic does cinematic destruction in their demos. Direct impulse works for one-shot prototypes; Field Systems are how you build the cleanest version of this pattern.</p>
+  </div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>Content/_project/Destruction</code> → right-click → <strong>FX → Field System</strong> → name it <code>FS_CannonImpact</code>. Open it. <span class="tag tag-vfx">FIELD</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the Field System editor's Construction Script (the editor opens to it by default), build this graph:</span></label>
+
+  <div class="bp-wiring">
+    <strong>FS_CannonImpact — Construction Script:</strong><br><br>
+    <span class="node">Construction Script</span> <span class="arrow">→</span> <span class="node">Add Field Command</span><br>
+    &nbsp;&nbsp;<span class="pin">Target</span> = <span class="value">External Cluster Strain</span><br>
+    &nbsp;&nbsp;<span class="pin">Field</span> <span class="arrow">←</span> <span class="node">Radial Falloff</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Magnitude</span> = <span class="value">1500.0</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Min Range</span> = <span class="value">0.0</span>, <span class="pin">Max Range</span> = <span class="value">1.0</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Default</span> = <span class="value">0.0</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Radius</span> = <span class="value">300.0</span> <span class="arrow">(impact area in cm)</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Position</span> = <span class="node">GetActorLocation (self)</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Falloff</span> = <span class="value">Linear</span>
+  </div>
+
+  <div class="tip"><strong>Reading this field in plain English:</strong> "At my actor's location, deliver up to 1500 units of External Cluster Strain to any chunks within 300 cm, falling off linearly to zero at the edge." That's enough to break a cluster (threshold 500) but the falloff means only chunks near the impact actually fly.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Save and close <code>FS_CannonImpact</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Now create the carrier actor. <code>_project/Blueprints</code> → new Blueprint Class → parent <strong>Actor</strong> → name <code>BP_ImpactField</code>. <span class="tag tag-class">CLASS</span></span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Components → + Add → <strong>Field System Component</strong> → make it root → Details panel → <strong>Field System</strong> property = <code>FS_CannonImpact</code>.</span></label>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In the Event Graph: <code>Event BeginPlay</code> → <strong>Set Life Span</strong> (target Self, In Lifespan = <code>0.1</code>). The actor exists for one tenth of a second — long enough for the field to deliver one strain pulse — then auto-destroys. <span class="tag tag-checkpoint">CHECKPOINT</span></span></label>
+
+  <div class="gotcha"><strong>Why Set Life Span and not Destroy Actor immediately?</strong> The Field System Component needs at least one tick to send its commands to the Chaos solver. Destroying on BeginPlay can race the solver and produce no break. 0.1 seconds is generous and still invisible to the player.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save <code>BP_ImpactField</code>. Drag one into the level for a manual test — if you placed it overlapping a fractured wall, the wall should break the moment you press Play. Delete the test instance after.</span></label>
+
+  <details class="shot" data-shot-id="shot-bonus-e1">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">BONUS SCREENSHOT E1 — Field System graph</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">the FS_CannonImpact Construction Script with the Add Field Command → Radial Falloff chain visible.</p>
+    <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Now wire the cannonball to spawn an impact field on every hit. Open <code>BP_Cannonball</code> → <code>On Component Hit</code>. Insert a new branch <em>before</em> the existing Apply Damage:</span></label>
+
+  <div class="bp-wiring">
+    <strong>BP_Cannonball — On Component Hit (Bonus E extension):</strong><br><br>
+    <span class="node">On Component Hit (Ball)</span> <span class="arrow">→</span> <span class="node">Spawn Actor From Class</span><br>
+    &nbsp;&nbsp;<span class="pin">Class</span> = <span class="value">BP_ImpactField</span><br>
+    &nbsp;&nbsp;<span class="pin">Spawn Transform</span> <span class="arrow">←</span> <span class="node">Make Transform</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="pin">Location</span> = <span class="value">Hit Location (from hit event)</span><br>
+    &nbsp;&nbsp;<span class="pin">Collision Handling Override</span> = <span class="value">Always Spawn, Ignore Collisions</span><br>
+    <span class="arrow">→</span> <span class="node">Apply Damage</span> <span class="arrow">(existing — for BP_Target)</span><br>
+    &nbsp;&nbsp;<span class="pin">Damaged Actor</span> = <span class="value">Other Actor</span><br>
+    &nbsp;&nbsp;<span class="pin">Base Damage</span> = <span class="value">25.0</span><br>
+    &nbsp;&nbsp;<span class="pin">Damage Causer</span> = <span class="value">Self</span><br>
+    <span class="arrow">→</span> <span class="node">Destroy Actor (Self)</span>
+  </div>
+
+  <div class="tip"><strong>Why spawn the field on <em>every</em> hit, not just GC hits?</strong> Geometry Collections are the only actors that listen to External Cluster Strain. Walls, targets, and everything else simply ignore the field — no cast required, no branch, no overhead. The field broadcasts; only listeners react. This is one of the most elegant patterns in Chaos.</div>
+
+  <div class="gotcha"><strong>Performance discipline (non-negotiable):</strong> Each BP_ImpactField spawn = one field command in the Chaos solver. At our cannon firing rate this is fine. If you also did Bonus B (explosive shells), watch the frame time — each shell spawns its own field. Limit total simulating chunks across the level to ~150 max. Use the GC's <strong>Sleep Threshold</strong> (Details → Physics) so resting chunks don't keep ticking. Add a <strong>Lifespan</strong> override to broken pieces (in the GC's Sim → Cluster Group settings) to despawn them after 5 seconds. This is the kind of discipline that keeps "I shipped a Chaos demo" from becoming "my framerate dies after 30 seconds of play."</div>
+
+  <div class="tip"><strong>Going further:</strong> The Field System editor supports composition — Add Field Command nodes can chain, and operator nodes (Sum, Cull, Conversion) let you combine fields. Try adding a second Add Field Command targeting <strong>Linear Velocity</strong> with a smaller Radial Falloff to add an outward push to broken chunks, on top of the strain that breaks them. Epic's <strong>Content Examples</strong> sample project has a "Chaos" map with eight or so pre-built Field System examples worth dissecting after you submit.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">Play, LMB, hit the fractured wall. Chunks should fly outward from the impact point with realistic falloff (chunks closest to the hit fly hardest, chunks at the edge of the radius barely move). <span class="tag tag-checkpoint">CHECKPOINT — Chaos via Field</span></span></label>
+
+  <details class="shot" data-shot-id="shot-bonus-e2">
+  <summary>
+    <span class="shot-toggle-icon">▶</span>
+    <span class="shot-icon">📸</span>
+    <span class="shot-label">BONUS SCREENSHOT E2 — Chaos break via Field</span>
+    <label class="shot-done" onclick="event.stopPropagation()">
+      <input type="checkbox" class="shot-done-cb">
+      <span>done</span>
+    </label>
+  </summary>
+  <div class="shot-body">
+    <p class="shot-desc">in-game capture mid-shatter, with chunks visibly separating along a radial pattern from the hit point.</p>
+    <div class="shot-image-area">
+      <p class="shot-placeholder">Reference image to be added by instructor — not required for student submission. The 📸 cue above describes what to capture for your own BP screenshots packet.</p>
+      <button type="button" class="shot-add-btn">+ Add screenshot</button>
+      <input type="file" accept="image/*" class="shot-file-input" hidden>
+    </div>
+    <div class="shot-image-wrap" hidden>
+      <img class="shot-img" alt="">
+      <div class="shot-image-buttons">
+        <button type="button" class="shot-replace-btn">Replace</button>
+        <button type="button" class="shot-remove-btn">Remove</button>
+      </div>
+    </div>
+    <div class="shot-quota-warn" hidden></div>
+  </div>
+</details>
+
+  <div style="margin: 18px 0 8px 0; padding-top: 12px; border-top: 1px dashed rgb(255, 183, 77); font-size: 13px; color: rgb(150, 70, 0);"><strong>E.opt — Slow-mo cinematic on break (optional cherry on top):</strong> When a Geometry Collection breaks, time briefly dilates so the player can savor the shatter. Teaches Set Global Time Dilation, latent Delay nodes, and why "feel" usually comes from time, not visuals.</div>
+
+  <label class="item"><input type="checkbox"><span class="item-text">In <code>BP_Cannonball</code>'s OnComponentHit, after the BP_ImpactField spawn but before Destroy Actor, insert:</span></label>
 
   <div class="bp-wiring">
     <strong>BP_Cannonball — OnComponentHit (slow-mo branch):</strong><br><br>
@@ -1478,13 +1479,13 @@ details.shot .shot-quota-warn {
 
   <label class="item"><input type="checkbox"><span class="item-text"><strong>Show-off polish:</strong> instead of just dilating time, also play a low rumble sound on the slow-mo entry and a "snap back" whoosh on exit. PlaySound2D works for both. <span class="tag tag-bonus">SHOW-OFF</span></span></label>
 
-  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, LMB on the fractured wall. Time should drop to a quarter speed for the duration of the shatter, then snap back. <span class="tag tag-checkpoint">CHECKPOINT — Bonus D</span></span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">Compile, Save, Play, LMB on the fractured wall. Time should drop to a quarter speed for the duration of the shatter, then snap back. <span class="tag tag-checkpoint">CHECKPOINT — Bonus E complete</span></span></label>
 
-  <details class="shot" data-shot-id="shot-13">
+  <details class="shot" data-shot-id="shot-bonus-e3">
   <summary>
     <span class="shot-toggle-icon">▶</span>
     <span class="shot-icon">📸</span>
-    <span class="shot-label">BONUS SCREENSHOT D</span>
+    <span class="shot-label">BONUS SCREENSHOT E3 — slow-mo Chaos shatter</span>
     <label class="shot-done" onclick="event.stopPropagation()">
       <input type="checkbox" class="shot-done-cb">
       <span>done</span>
@@ -1509,6 +1510,7 @@ details.shot .shot-quota-warn {
 </details>
 </div>
 
+
 <!-- ═══════════════════════════════════════════════ -->
 <div class="section-divider">
   <span>Submission Checklist &amp; Rubric</span>
@@ -1524,10 +1526,9 @@ details.shot .shot-quota-warn {
   <h3>Self-check before you submit</h3>
   <label class="item"><input type="checkbox"><span class="item-text">Project default map = <code>MAP_CannonRange</code> (the .exe opens straight into your level, not an empty world).</span></label>
   <label class="item"><input type="checkbox"><span class="item-text">Clicking LMB fires cannons. Cannonballs travel, hit, react. No crashes during a 60-second play test.</span></label>
-  <label class="item"><input type="checkbox"><span class="item-text">At least one Chaos Geometry Collection breaks when hit.</span></label>
   <label class="item"><input type="checkbox"><span class="item-text">Cannons recoil when fired (Timeline animation visible).</span></label>
   <label class="item"><input type="checkbox"><span class="item-text">All Blueprints, levels, inputs, and your custom assets live under <code>Content/_project/</code>.</span></label>
-  <label class="item"><input type="checkbox"><span class="item-text">All assets follow naming conventions: <code>BP_</code>, <code>IA_</code>, <code>IMC_</code>, <code>SM_</code>, <code>M_</code>, <code>NS_</code>, <code>S_</code>, <code>MAP_</code>, <code>GC_</code>.</span></label>
+  <label class="item"><input type="checkbox"><span class="item-text">All assets follow naming conventions: <code>BP_</code>, <code>IA_</code>, <code>IMC_</code>, <code>SM_</code>, <code>M_</code>, <code>NS_</code>, <code>S_</code>, <code>MAP_</code>.</span></label>
   <label class="item"><input type="checkbox"><span class="item-text">Comment boxes in Event Graphs labeling Fire flow, On Hit flow, BeginPlay flow.</span></label>
   <label class="item"><input type="checkbox"><span class="item-text">Three files named <code>LastName_FirstInitial_GAME266_Cannons</code> (zip + mp4) and <code>LastName_FirstInitial_GAME266_BPScreenshots</code> (zip).</span></label>
   <label class="item"><input type="checkbox"><span class="item-text">Zipped executable uploaded to Dropbox. Video + screenshots uploaded to Blackboard.</span></label>
@@ -1572,7 +1573,7 @@ details.shot .shot-quota-warn {
 
 <div class="doc-footer">
   GAME 266 Core Principles: Game Tech &nbsp;·&nbsp; Professor Lindsey &nbsp;·&nbsp; SCAD Atlanta<br>
-  Build Guide v1.4 &nbsp;·&nbsp; Unreal Engine 5.6.1 &nbsp;·&nbsp; <em>Our Business is Fun.</em>
+  Build Guide v1.5 &nbsp;·&nbsp; Unreal Engine 5.6.1 &nbsp;·&nbsp; <em>Our Business is Fun.</em>
 </div>
 
 <script>
